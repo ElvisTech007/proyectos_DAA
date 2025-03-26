@@ -18,27 +18,27 @@ Se implementan los siguientes modelos de generación de grafos:
 
 * **Grafo de Malla (Gm,n)**: Crea una malla de nodos con conexiones adyacentes.
     ```python
-    grafoMalla(m, n, dirigido=False)
+    grafoMalla(m, n)
     ```
 * **Erdös-Rényi (Gn,m)**: Genera un grafo aleatorio con un número fijo de aristas.
     ```python
-    grafoErdosRenyi(n, m, dirigido=False)
+    grafoErdosRenyi(n, m)
     ```
 * **Gilbert (Gn,p)**: Genera un grafo aleatorio con probabilidad de conexión entre nodos.
     ```python
-    grafoGilbert(n, p, dirigido=False)
+    grafoGilbert(n, p)
     ```
 * **Geográfico Simple (Gn,r)**: Genera un grafo basado en la distancia entre nodos en un espacio geográfico.
     ```python
-    grafoGeografico(n, r, dirigido=False)
+    grafoGeografico(n, r)
     ```
 * **Barabási-Albert (Gn,d)**: Genera un grafo con crecimiento preferencial.
     ```python
-    grafoBarabasiAlbert(n, d, dirigido=False)
+    grafoBarabasiAlbert(n, d)
     ```
 * **Dorogovtsev-Mendes (Gn)**: Genera un grafo con crecimiento triangular.
     ```python
-    grafoDorogovtsevMendes(n, dirigido=False)
+    grafoDorogovtsevMendes(n)
     ```
 
 ## Funcionalidades Adicionales
@@ -55,7 +55,7 @@ Se implementan los siguientes modelos de generación de grafos:
 
 1.  Clona el repositorio:
     ```bash
-    git clone [https://github.com/ElvisTech007/proyectos_DAA.git](https://github.com/ElvisTech007/proyectos_DAA.git)
+    git clone https://github.com/ElvisTech007/proyectos_DAA.git
     ```
 2.  Ejecuta los scripts de Python para generar grafos y archivos GraphViz.
 3.  Utiliza Gephi para visualizar y generar imágenes de los grafos a partir de los archivos `.gv`.
