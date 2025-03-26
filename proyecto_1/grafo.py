@@ -1,24 +1,27 @@
+import os
+import random
+
 from arista import Arista
 from nodo import Nodo
-import random
+
 
 class Grafo:
     """Un grafo esta definido como una dupla que consta de un conjunto de nodos
     y un conjunto de aristas subconjunto potencia del conjunto de nodos"""
 
     # Metodo especiales de la clase
-    def __init__(self, nombre_grafo, nodos, aristas, dirigido):
+    def __init__(self, nombre_grafo, lista_nodos, lista_aristas, dirigido):
         """Constructor de la clase Grafo"""
         self.nombre_grafo = nombre_grafo
-        self.nodos = nodos  # Debería ser una lista de nodos
+        self.lista_nodos = lista_nodos  # Debería ser una lista de nodos
         # Diccionario por si se le quiere añadir más cosas en un futuro
-        self.aristas = aristas  # Diccionario de aristas suponiendo que todo chido xd
+        self.lista_aristas = lista_aristas  # lista de aristas suponiendo que todo chido xd
         self.dirigido = dirigido  # booleano para ver si es dirigido
 
     def __str__(self):
         """Metodo str"""
-        nodos_str = ", ".join(str(nodo) for nodo in self.nodos)
-        aristas_str = ", ".join(str(arista) for arista in self.aristas)
+        nodos_str = ", ".join(str(nodo) for nodo in self.lista_nodos)
+        aristas_str = ", ".join(str(arista) for arista in self.lista_aristas)
         return f"{self.nombre_grafo}={{[{nodos_str}], [{aristas_str}]}}"
 
     def __repr__(self):
@@ -27,10 +30,10 @@ class Grafo:
     # Metodos EXTRA del Grafo para poder manipular su información:
 
     def aniadir_nodo(self, nodo):
-        self.nodos.append(nodo)
+        self.lista_nodos.append(nodo)
 
     def añadir_arista(self, arista):
-        self.aristas.append(arista)
+        self.lista_aristas.append(arista)
 
     def obtener_grado(self, nodo):
         """Método para obtener el grado de un nodo"""
@@ -40,27 +43,27 @@ class Grafo:
     def es_vacio(self):
         """Verifica si el grafo está vacío."""
         # Esto para ver que se le pase un grafo vacio
-        return not self.nodos and not self.aristas
+        return not self.lista_nodos and not self.lista_aristas
 
     def emparejamiento_valido(self, arista, dirigido):
         """
         Verifica si las parejas cumplen las condiciones de emparejamiento:
         - No bucles
         - No conexiones repetidas
-        :param nodos: tupla de nodos que van a formar la arista
-        :param aristas: 
+        :param arista: tupla de nodos que van a formar la arista
+        :param dirigido: bool que dice si es dirigido o no
         :return: True si las parejas cumplen las condiciones, False en caso contrario.
         """
         if arista.nodo_1 == arista.nodo_2:
             return False
-        if arista in self.aristas:
+        if arista in self.lista_aristas:
             return False
         # Si no es dirigido deberíamos verificar si 
         # la pareja nodo_2 -> nodo_1 está
         # por que al no ser dirigido, esta pareja es
         # la misma que nodo_1, nodo_2
-        if dirigido:
-            if Arista(arista.nodo_2, arista.nodo_1) in self.aristas:
+        if not dirigido:
+            if Arista(arista.nodo_2, arista.nodo_1) in self.lista_aristas:
                 return False
         return True
 
@@ -89,27 +92,25 @@ class Grafo:
 
         # Si el nodo no es vacio lo vaciamos xD
         if not self.es_vacio():
-            self.nodos = []
-            self.aristas = []
+            self.lista_nodos = []
+            self.lista_aristas = []
         
         # Ahora si generamos nuestra lista de n nodos
         # del 1 al n
         nodos = [i+1 for i in range(n)]
-        self.nodos = nodos
+        self.lista_nodos = nodos
         # Mientras no hayamos completado las conexiones
-        while len(self.aristas) < m:
+        while len(self.lista_aristas) < m:
             
             # Ahora vamos a hacer random choice para elegir
-            nodo_1, nodo_2 = random.choice(self.nodos), random.choice(self.nodos)
+            nodo_1, nodo_2 = random.choice(self.lista_nodos), random.choice(self.lista_nodos)
             arista_propuesta = Arista(nodo_1,nodo_2)
             if not self.emparejamiento_valido(arista_propuesta, self.dirigido):
                 #print(arista_propuesta, self.emparejamiento_valido(arista_propuesta))
                 continue
             else:
-                self.aristas.append(arista_propuesta)
-        
+                self.lista_aristas.append(arista_propuesta)
 
-        
 
     def grafo_gilbert(self, n, p, dirigido=False):
         """Genera grafo aleatorio con el modelo Gilbert."""
@@ -127,6 +128,24 @@ class Grafo:
         """Genera grafo aleatorio con el modelo Dorogovtsev-Mendes."""
         pass
 
-    def guardar_graphviz(self, directorio, nombre_archivo):
+    
+    def guardar_graphviz(self, directorio="./", nombre_archivo="graph.dot"):
         """Guarda el grafo en un archivo con formato Graphviz."""
-        pass
+        # Primero creamos un archivo con terminación
+        # dot para escribirlo en un directorio y le asignamos el nombre
+        # que tiene el archivo
+        ruta_completa = os.path.join(directorio, nombre_archivo)
+        
+        with open(ruta_completa, "w") as archivo_dot:
+            if not self.dirigido:
+                apuntador = " -- "
+                archivo_dot.write(f"graph {self.nombre_grafo} {{\n")
+            else:
+                apuntador = " -> "
+                archivo_dot.write(f"digraph {self.nombre_grafo} {{\n")
+            for nodo in self.lista_nodos:
+                archivo_dot.write(f"    {nodo};\n")
+            for arista in self.lista_aristas:
+                archivo_dot.write(f"    {arista.nodo_1}{apuntador}{arista.nodo_2};\n")
+            archivo_dot.write("}")
+        print(f"Grafo guardado en: {ruta_completa}")
