@@ -129,7 +129,7 @@ class Grafo:
         pass
 
     
-    def guardar_graphviz(self, directorio="./", nombre_archivo="graph.dot"):
+    def guardar_graphviz(self,  nombre_archivo="graph.dot",directorio="proyecto_1/archivos_graphviz"):
         """Guarda el grafo en un archivo con formato Graphviz."""
         # Primero creamos un archivo con terminación
         # dot para escribirlo en un directorio y le asignamos el nombre
@@ -149,3 +149,4 @@ class Grafo:
                 archivo_dot.write(f"    {arista.nodo_1}{apuntador}{arista.nodo_2};\n")
             archivo_dot.write("}")
         print(f"Grafo guardado en: {ruta_completa}")
+        
