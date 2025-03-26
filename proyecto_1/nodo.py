@@ -7,4 +7,3 @@ class Nodo:
 
     def __repr__(self):
         return f"{self.etiqueta}"
-# Pruebas por si las moscas
