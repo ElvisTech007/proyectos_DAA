@@ -6,12 +6,8 @@ class Nodo:
 
     Attributes
     ----------
-    nodo_1 : Nodo
-        Nodo de origen de la arista.
-    nodo_2 : Nodo
-        Nodo de destino de la arista.
-    peso : int, opcional
-        Peso asociado a la arista. El valor predeterminado es 1.
+    etiqueta : int
+        etiqueta del nodo
     """
 
     def __init__(self, etiqueta):

@@ -79,6 +79,12 @@ class Grafo:
         """
         self.lista_aristas.append(arista)
 
+    def obtener_nodo(self,etiqueta):
+        """Metodo para acceder a un nodo mediante su etiqueta"""
+        # Primero vamos a usar un diccionario para que sea mas facil 
+        diccionario_nodos = {nodo.etiqueta : nodo for nodo in self.lista_nodos}
+        return diccionario_nodos.get(etiqueta)
+
     def obtener_grado(self, nodo):
         """Método para obtener el grado de un nodo"""
         # Aquí debe de hacer algo para que haga eso jaja salu2
@@ -133,8 +139,54 @@ class Grafo:
     # ALGORITMOS DE GENERACIÓN DE GRAFOS ALEATORIOS
 
     def grafo_malla(self, m, n, dirigido=False):
-        """Genera grafo de malla"""
-        pass
+        """
+        Genera un grafo de malla.
+
+        Construye un grafo de malla con 'm' columnas y 'n' filas.
+
+        Parameters
+        ----------
+        m : int
+            Número de columnas en la malla.
+        n : int
+            Número de filas en la malla.
+        dirigido : bool, opcional
+            Indica si el grafo es dirigido (True) o no dirigido (False). El valor predeterminado es False.
+
+        Returns
+        -------
+        None
+            Este método modifica el grafo actual (self) añadiendo nodos y aristas para formar la malla.
+
+        Notes
+        -----
+        El grafo generado tendrá 'm * n' nodos y aristas que conectan los nodos adyacentes en la malla.
+        """
+        # Primero vamos  añadir todos esos m*n nodos:
+        # Si el grafo no es vacio lo vaciamos xD
+        if not self.es_vacio():
+            self.lista_nodos = []
+            self.lista_aristas = []
+        [self.aniadir_nodo(Nodo(i+1)) for i in range((n*m))]
+        # AHora debemos agregar las aristas tal que se forme una malla:
+        for i in range(1,(m*n)+1):
+                # Primero proponemos la arista de la derecha
+                # Como avanzamos uno siempre existe
+                # pero determinamos la conexion sabiendo si esta a la orilla
+                # es decir, su mod m es igual a 0
+
+                # SI no es igual no esta en la orilla
+                if (i)%m != 0:
+                    arista_propuesta = Arista(self.obtener_nodo(i), self.obtener_nodo(i+1))
+                    self.aniadir_arista(arista_propuesta)
+                
+                # Ahora para la arista que apunta hacia abajo tenemos que 
+                # mientras m*(n-1) que indica justamente la penultima fila
+                # que es la ultima que tiene conexiones hacia abajo
+                if i <= m*(n-1):
+                    arista_propuesta = Arista(self.obtener_nodo(i), self.obtener_nodo(i+m))
+                    self.aniadir_arista(arista_propuesta)
+        # Eso debería ser todo
 
     def grafo_erdos_renyi(self, n, m, dirigido=False):
         """
