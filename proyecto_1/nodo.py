@@ -10,7 +10,7 @@ class Nodo:
         etiqueta del nodo
     """
 
-    def __init__(self, etiqueta):
+    def __init__(self, etiqueta, atributos={}):
         """
         Constructor de la clase Nodo.
 
@@ -18,6 +18,8 @@ class Nodo:
         ----------
         etiqueta : str
             Etiqueta única del nodo.
+        atributos : dict, opcional
+            Atributos del nodo
         """
         self.etiqueta = etiqueta
 
@@ -42,3 +44,35 @@ class Nodo:
             Representación en cadena del nodo, que es su etiqueta.
         """
         return f"{self.etiqueta}"
+
+    def __eq__(self, otro_nodo):
+        """
+        Compara dos nodos por su etiqueta.
+
+        Parámetros
+        ----------
+        otro_nodo : Nodo
+            El otro nodo con el que se va a comparar.
+
+        Devuelve
+        -------
+        bool
+            True si los nodos tienen la misma etiqueta, False en caso contrario.
+        """
+        if isinstance(otro_nodo, Nodo):
+            return self.etiqueta == otro_nodo.etiqueta
+        return False
+
+    def __hash__(self):
+        """
+        Calcula el valor hash del nodo.
+
+        El valor hash se basa en la etiqueta del nodo, lo que permite que los nodos
+        se utilicen como claves en diccionarios y conjuntos.
+
+        Devuelve
+        -------
+        int
+            El valor hash del nodo.
+        """
+        return hash(self.etiqueta)  # Usamos la etiqueta como valor hash

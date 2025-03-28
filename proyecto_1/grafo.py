@@ -1,6 +1,7 @@
 import os
 import random
 
+from collections import OrderedDict
 from arista import Arista
 from nodo import Nodo
 
@@ -10,25 +11,25 @@ class Grafo:
     y un conjunto de aristas subconjunto potencia del conjunto de nodos"""
 
     # Metodo especiales de la clase
-    def __init__(self, nombre_grafo, lista_nodos, lista_aristas, dirigido):
+    def __init__(self, nombre_grafo="G", conjunto_nodos=OrderedDict(), conjunto_aristas=OrderedDict(), dirigido=False):
         """
         Constructor de la clase Grafo.
 
         Parámetros
         ----------
-        nombre_grafo : str
+        nombre_grafo : str, opcional
             El nombre del grafo.
-        lista_nodos : list
+        conjunto_nodos : OrderedDict, opcional
             Lista de objetos Nodo que representan los nodos del grafo.
-        lista_aristas : list
+        conjunto_aristas : OrderedDict
             Lista de objetos Arista que representan las aristas del grafo.
         dirigido : bool
             Indica si el grafo es dirigido (True) o no dirigido (False).
         """
         self.nombre_grafo = nombre_grafo
-        self.lista_nodos = lista_nodos  # Debería ser una lista de nodos
+        self.conjunto_nodos = conjunto_nodos  # Debería ser una lista de nodos
         # Diccionario por si se le quiere añadir más cosas en un futuro
-        self.lista_aristas = lista_aristas  # lista de aristas suponiendo que todo chido xd
+        self.conjunto_aristas = conjunto_aristas  # lista de aristas suponiendo que todo chido xd
         self.dirigido = dirigido  # booleano para ver si es dirigido
 
     def __str__(self):
@@ -40,19 +41,23 @@ class Grafo:
         str
             Representación en cadena del grafo, incluyendo el nombre, los nodos y las aristas.
         """
-        nodos_str = ", ".join(str(nodo) for nodo in self.lista_nodos)
-        aristas_str = ", ".join(str(arista) for arista in self.lista_aristas)
+        nodos_str = ", ".join(str(nodo) for nodo in self.conjunto_nodos.values())
+        # Modificación para iterar sobre las listas de aristas
+        aristas_str = ", ".join(str(arista) for arista in self.conjunto_aristas.values())
         return f"{self.nombre_grafo}={{[{nodos_str}], [{aristas_str}]}}"
 
     def __repr__(self):
         """
-        Método str para mostrar el grafo.
+        Método repr para mostrar el grafo.
 
         Devuelve
         -------
         str
             Representación en cadena del grafo, incluyendo el nombre, los nodos y las aristas.
         """
+        nodos_str = ", ".join(str(nodo) for nodo in self.conjunto_nodos.values())
+        # Modificación para iterar sobre las listas de aristas
+        aristas_str = ", ".join(str(arista) for arista_list in self.conjunto_aristas.values() for arista in arista_list)
         return f"Grafo(Nodos=[{nodos_str}], Aristas=[{aristas_str}])"
 
     # Metodos EXTRA del Grafo para poder manipular su información:
@@ -66,7 +71,9 @@ class Grafo:
         nodo : Nodo
             Objeto Nodo que se va a añadir al grafo.
         """  
-        self.lista_nodos.append(nodo)
+        # Añadimos el nodo al diccionario de nodos
+        # con Etiqueta que apunta al objeto Nodo
+        self.conjunto_nodos[nodo.etiqueta] = nodo
 
     def aniadir_arista(self, arista):
         """
@@ -76,14 +83,25 @@ class Grafo:
         ----------
         arista : Arista
             Objeto Arista que se va a añadir al grafo.
+
         """
-        self.lista_aristas.append(arista)
+        nodo_1 = arista.nodo_1
+        nodo_2 = arista.nodo_2
+
+        # Asegurarse de que los nodos existen en el grafo
+        if nodo_1.etiqueta not in self.conjunto_nodos or nodo_2.etiqueta not in self.conjunto_nodos:
+            # Por si no existen
+            raise ValueError("Uno o ambos nodos de la arista no existen en el grafo.")
+
+        self.conjunto_aristas[(nodo_1, nodo_2)] = arista
 
     def obtener_nodo(self,etiqueta):
         """Metodo para acceder a un nodo mediante su etiqueta"""
         # Primero vamos a usar un diccionario para que sea mas facil 
-        diccionario_nodos = {nodo.etiqueta : nodo for nodo in self.lista_nodos}
-        return diccionario_nodos.get(etiqueta)
+        if etiqueta in self.conjunto_nodos.keys():
+            return self.conjunto_nodos[etiqueta]
+        else:
+            return None  # O lanza una excepción personalizada
 
     def obtener_grado(self, nodo):
         """Método para obtener el grado de un nodo"""
@@ -100,7 +118,7 @@ class Grafo:
             True si el grafo está vacío (no tiene nodos ni aristas), False en caso contrario.
         """
         # Esto para ver que se le pase un grafo vacio
-        return not self.lista_nodos and not self.lista_aristas
+        return not self.conjunto_aristas and not self.conjunto_nodos
 
     def emparejamiento_valido(self, arista, dirigido):
         """
@@ -125,14 +143,14 @@ class Grafo:
         """
         if arista.nodo_1 == arista.nodo_2:
             return False
-        if arista in self.lista_aristas:
+        if arista in self.conjunto_aristas.values():
             return False
         # Si no es dirigido deberíamos verificar si 
         # la pareja nodo_2 -> nodo_1 está
         # por que al no ser dirigido, esta pareja es
         # la misma que nodo_1, nodo_2
         if not dirigido:
-            if Arista(arista.nodo_2, arista.nodo_1) in self.lista_aristas:
+            if Arista(arista.nodo_2, arista.nodo_1) in self.conjunto_aristas.values():
                 return False
         return True
 
@@ -165,8 +183,8 @@ class Grafo:
         # Primero vamos  añadir todos esos m*n nodos:
         # Si el grafo no es vacio lo vaciamos xD
         if not self.es_vacio():
-            self.lista_nodos = []
-            self.lista_aristas = []
+            self.conjunto_aristas = OrderedDict()
+            self.conjunto_nodos = OrderedDict()
         [self.aniadir_nodo(Nodo(i+1)) for i in range((n*m))]
         # AHora debemos agregar las aristas tal que se forme una malla:
         for i in range(1,(m*n)+1):
@@ -223,17 +241,18 @@ class Grafo:
 
         # Si el nodo no es vacio lo vaciamos xD
         if not self.es_vacio():
-            self.lista_nodos = []
-            self.lista_aristas = []
+            self.lista_nodos = OrderedDict()
+            self.lista_aristas = OrderedDict()
         
         # Ahora si generamos nuestra lista de n nodos
         # del 1 al n
-        [self.aniadir_nodo(i+1) for i in range(n)]
+        [self.aniadir_nodo(Nodo(i)) for i in range(n)]
+        lista_nodos = list(self.conjunto_nodos.values())
         # Mientras no hayamos completado las conexiones
-        while len(self.lista_aristas) < m:
+        while len(self.conjunto_aristas) < m:
             
             # Ahora vamos a hacer random choice para elegir
-            nodo_1, nodo_2 = random.choice(self.lista_nodos), random.choice(self.lista_nodos)
+            nodo_1, nodo_2 = random.choice(lista_nodos), random.choice(lista_nodos)
             arista_propuesta = Arista(nodo_1,nodo_2)
             if not self.emparejamiento_valido(arista_propuesta, self.dirigido):
                 #print(arista_propuesta, self.emparejamiento_valido(arista_propuesta))
@@ -291,9 +310,10 @@ class Grafo:
             else:
                 apuntador = " -> "
                 archivo_dot.write(f"digraph {self.nombre_grafo} {{\n")
-            for nodo in self.lista_nodos:
+
+            for nodo in self.conjunto_nodos.keys():
                 archivo_dot.write(f"    {nodo};\n")
-            for arista in self.lista_aristas:
+            for arista in self.conjunto_aristas.values():
                 archivo_dot.write(f"    {arista.nodo_1}{apuntador}{arista.nodo_2};\n")
             archivo_dot.write("}")
         print(f"Grafo guardado en: {ruta_completa}")
