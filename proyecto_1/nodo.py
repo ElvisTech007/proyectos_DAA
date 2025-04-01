@@ -22,6 +22,7 @@ class Nodo:
             Atributos del nodo
         """
         self.etiqueta = etiqueta
+        self.atributos = atributos if atributos is not None else {}
 
     def __str__(self):
         """

@@ -64,20 +64,25 @@ from grafo import Grafo
 # Crear el grafo
 grafo = Grafo("G_1",dirigido=False)
 
-# #Ahora voy a probar al algoritmo grafo_erdos_renyi
-grafo.grafo_erdos_renyi(500, 1000, dirigido=False)
+# # #Ahora voy a probar al algoritmo grafo_erdos_renyi
+# grafo.grafo_erdos_renyi(500, 1000, dirigido=False)
+# #print(grafo)
+# grafo.guardar_graphviz(nombre_archivo="grafo_erdos_renyi.dot")
+
+# # Ahora voy a probar al algoritmo grafo_malla
+# grafo.grafo_malla(24,24)
+# #print(grafo)
+# grafo.guardar_graphviz(nombre_archivo="grafo_malla.dot")
+
+# # Ahora voy a probar el algoritmo de GIlbert
+# grafo.grafo_gilbert(200, 0.01, dirigido=False)
+# #print(grafo)
+# grafo.guardar_graphviz(nombre_archivo="grafo_gilbert.dot")
+
+# Ahora voy a probar el algoritmo geografico:
+grafo.grafo_geografico(200, 0.1, dirigido=False)
 #print(grafo)
-grafo.guardar_graphviz(nombre_archivo="grafo_erdos_renyi.dot")
-
-# Ahora voy a probar al algoritmo grafo_malla
-grafo.grafo_malla(24,24)
-#print(grafo)
-grafo.guardar_graphviz(nombre_archivo="grafo_malla.dot")
-
-
-
-
-
+grafo.guardar_graphviz(nombre_archivo="grafo_geografico.dot")
 
 
 

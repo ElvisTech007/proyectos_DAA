@@ -2,6 +2,9 @@ import os
 import random
 
 from collections import OrderedDict
+from math import sqrt
+from itertools import combinations
+from random import choices, uniform
 from arista import Arista
 from nodo import Nodo
 
@@ -246,7 +249,7 @@ class Grafo:
         
         # Ahora si generamos nuestra lista de n nodos
         # del 1 al n
-        [self.aniadir_nodo(Nodo(i)) for i in range(n)]
+        [self.aniadir_nodo(Nodo(i+1)) for i in range(n)]
         lista_nodos = list(self.conjunto_nodos.values())
         # Mientras no hayamos completado las conexiones
         while len(self.conjunto_aristas) < m:
@@ -263,14 +266,64 @@ class Grafo:
 
     def grafo_gilbert(self, n, p, dirigido=False):
         """Genera grafo aleatorio con el modelo Gilbert."""
-        pass
+        # Primero generamos todos los nodos
+        # Primero vamos  añadir todos esos m*n nodos:
+        # Si el grafo no es vacio lo vaciamos xD
+        if not self.es_vacio():
+            self.conjunto_aristas = OrderedDict()
+            self.conjunto_nodos = OrderedDict()
+        [self.aniadir_nodo(Nodo(i+1)) for i in range(n)]
+        # Despues de eso para cada pareja de nodos
+        parejas_nodos = combinations(list(self.conjunto_nodos.values()), 2)
+        # Intentamos crear una arista con una probabilidad p
+        # Para cada nodo de la lista y así lo vamos a hacer sucesivamente
+        for nodo_1, nodo_2 in parejas_nodos:
+            # Resultado del volado, la función regresa la lista [False]
+            gano_volado = random.choices([True, False], [p, 1-p])[0]
+            # print(gano_volado)
+            arista_propuesta = Arista(nodo_1,nodo_2)
+            if gano_volado and self.emparejamiento_valido(arista_propuesta, self.dirigido):
+                self.aniadir_arista(arista_propuesta)
 
     def grafo_geografico(self, n, r, dirigido=False):
         """Genera grafo aleatorio con el modelo geográfico simple."""
-        pass
+        # Primero generamos todos los nodos
+        # Primero vamos  añadir todos esos m*n nodos:
+        # Si el grafo no es vacio lo vaciamos xD
+        def distancia_euclideana(punto_1, punto_2):
+            """función auxiliar para calcular la distancia euclidiana"""
+            return sqrt((punto_1[0] - punto_2[0])**2 +  (punto_1[1] - punto_2[1])**2)
+
+        if not self.es_vacio():
+            self.conjunto_aristas = OrderedDict()
+            self.conjunto_nodos = OrderedDict()
+
+        # Ahora cuando los creamos debemos añadirles una posición 
+        # que se genere uniformemente entre 0 y 1 para x,y
+        for i in range(n):
+            # Posicion aleatoria con x,y entre 0 y 1
+            x,y = random.uniform(0,1), random.uniform(0,1)
+            nodo = Nodo(i+1, {"posicion": (x,y)})
+            self.aniadir_nodo(nodo)
+        # Ya que creamos los nodos entonces tenemos que
+        # Medir la distancia de ese nodo a todos los demás nodos
+        parejas_nodos = combinations(list(self.conjunto_nodos.values()), 2)
+        # y solo conectar aquellos que están a distancia a lo más r
+        for nodo_1, nodo_2 in parejas_nodos:
+            pos_nodo_1 = nodo_1.atributos["posicion"]
+            pos_nodo_2 = nodo_2.atributos["posicion"]
+            distancia_entre_nodos = distancia_euclideana(pos_nodo_1, pos_nodo_2)
+            if distancia_entre_nodos <= r:
+                arista_propuesta = Arista(nodo_1, nodo_2)
+                self.aniadir_arista(arista_propuesta)
+
 
     def grafo_barabasi_albert(self, n, d, dirigido=False):
-        """Genera grafo aleatorio con el modelo Barabasi-Albert."""
+        """Genera grafo aleatorio con el modelo Barabasi-Albert.
+        Variante del modelo Gn,d Barabási-Albert. 
+        Colocar n nodos uno por uno, asignando a cada uno d aristas a vértices
+        distintos de tal manera que la probabilidad de que el vértice nuevo se conecte a un vértice existente 
+        v es proporcional a la cantidad de aristas que v tiene actualmente"""
         pass
 
     def grafo_dorogovtsev_mendes(self, n, dirigido=False):
