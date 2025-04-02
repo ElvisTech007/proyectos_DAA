@@ -62,7 +62,18 @@ class Grafo:
         # Modificación para iterar sobre las listas de aristas
         aristas_str = ", ".join(str(arista) for arista_list in self.conjunto_aristas.values() for arista in arista_list)
         return f"Grafo(Nodos=[{nodos_str}], Aristas=[{aristas_str}])"
+    # Metodo PRIVADOS  para manejar cositas:
+    def _echar_volado(self, p=0.5):
+        """
+        Simula un volado con una probabilidad dada.
 
+        Args:
+            probabilidad: La probabilidad de obtener True.
+
+        Returns:
+            True o False.
+        """
+        return random.choices([True, False], [p, 1-p])[0]
     # Metodos EXTRA del Grafo para poder manipular su información:
 
     def aniadir_nodo(self, nodo):   
@@ -96,6 +107,14 @@ class Grafo:
             # Por si no existen
             raise ValueError("Uno o ambos nodos de la arista no existen en el grafo.")
 
+        # Ahora modificamos el atributo de vecinos para ir agregando los vecinos:
+        if hasattr(nodo_1, "atributos") and hasattr(nodo_2, "atributos"):
+            # SI tienen el atributo de vecinos entonces:
+            # Añadimos los vecinos:
+            nodo_1.atributos["vecinos"].append(nodo_2)
+            nodo_2.atributos["vecinos"].append(nodo_1)
+        else:
+            raise ValueError("Uno o ambos nodos no tienen atributo de vecinos")
         self.conjunto_aristas[(nodo_1, nodo_2)] = arista
 
     def obtener_nodo(self,etiqueta):
@@ -106,10 +125,6 @@ class Grafo:
         else:
             raise ValueError(f"El nodo {etiqueta} no existe") # O lanza una excepción personalizada
 
-    def obtener_grado(self, nodo):
-        """Método para obtener el grado de un nodo"""
-        # Aquí debe de hacer algo para que haga eso jaja salu2
-        pass
     
     def es_vacio(self):
         """
@@ -288,7 +303,7 @@ class Grafo:
         # Para cada nodo de la lista y así lo vamos a hacer sucesivamente
         for nodo_1, nodo_2 in parejas_nodos:
             # Resultado del volado, la función regresa la lista [False]
-            gano_volado = random.choices([True, False], [p, 1-p])[0]
+            gano_volado = self._echar_volado(p)
             # print(gano_volado)
             arista_propuesta = Arista(nodo_1,nodo_2)
             if gano_volado and self.emparejamiento_valido(arista_propuesta, self.dirigido):
@@ -333,6 +348,13 @@ class Grafo:
         Colocar n nodos uno por uno, asignando a cada uno d aristas a vértices
         distintos de tal manera que la probabilidad de que el vértice nuevo se conecte a un vértice existente 
         v es proporcional a la cantidad de aristas que v tiene actualmente"""
+
+        # Definimos nuestra función para calcular la probabilidad
+        def formula_probabilidad(nodo, d):
+            # la formula es 1  - deg(v)/d
+            p = 1 - (nodo.obtener_grado()/d)
+            return p
+            
         # Conforme vamos generando los nodos vamos a tratar de conectar 
         # los nodos anteriores con una función de probabilidad
         # que se calcula como deg(r)/d 
@@ -341,8 +363,53 @@ class Grafo:
         # para esto usare al diccionario atributos con el atributo vecinos
         # que será una lista
 
-        # También es importante recordar que 
-        pass
+
+        # Primero generamos todos los nodos
+        # Primero vamos  añadir todos esos m*n nodos:
+        # Si el grafo no es vacio lo vaciamos xD
+        if not self.es_vacio():
+            self.conjunto_aristas = OrderedDict()
+            self.conjunto_nodos = OrderedDict()
+
+        etiquetas_nodos = [(i+1) for i in range(n)]
+        # Esto es para aleatorizar los nombres de los nodos
+        # Para crear la estructura deseada
+        random.shuffle(etiquetas_nodos)
+
+        # Creando los nodos:
+        for etiqueta  in etiquetas_nodos:
+            # Creamos los nodos con un atributo vecinos que es una lista
+            nodo_creado = Nodo(etiqueta , {"vecinos":[]})
+            self.aniadir_nodo(nodo_creado)
+            # Para cada nodo que ya está en 
+            for nodo in self.conjunto_nodos.values():
+                # Recorremos todos los nodos ya creados previamente
+
+                # Si es el mismo nodo pues ya terminamos de recorrer del inicio hasta 
+                # donde ya estabamos con nuestro nodo tons saltamos a la sig
+                # iteraciob                
+                if nodo == nodo_creado:
+                    break
+                else:
+                    # De otra forma, tratamos de establecer la conexion
+                    # con la funcion de probabilidad
+
+                    # Creamos la arista propuesta
+                    arista_propuesta = Arista(nodo, nodo_creado)
+                    # Calculamos la probabilidad
+                    probabilidad = formula_probabilidad(nodo, d)
+                    # echamos el volado
+                    gano_volado = self._echar_volado(probabilidad)
+                    # Ahora si ganamos el volado establecemos la conexion
+                    # no sin antes verificarla
+                    conexion_valida = (
+                        gano_volado
+                        and self.emparejamiento_valido(arista_propuesta, self.dirigido)
+                        and nodo.obtener_grado() <= d
+                    )
+
+                    if conexion_valida:
+                        self.aniadir_arista(arista_propuesta)
 
     def grafo_dorogovtsev_mendes(self, n, dirigido=False):
         """Genera grafo aleatorio con el modelo Dorogovtsev-Mendes."""

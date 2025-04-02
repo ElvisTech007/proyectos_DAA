@@ -69,10 +69,10 @@ grafo = Grafo("G_1",dirigido=False)
 # #print(grafo)
 # grafo.guardar_graphviz(nombre_archivo="grafo_erdos_renyi.dot")
 
-# Ahora voy a probar al algoritmo grafo_malla
-grafo.grafo_malla(24,24)
-#print(grafo)
-grafo.guardar_graphviz(nombre_archivo="grafo_malla.dot")
+# # Ahora voy a probar al algoritmo grafo_malla
+# grafo.grafo_malla(24,24)
+# #print(grafo)
+# grafo.guardar_graphviz(nombre_archivo="grafo_malla.dot")
 
 # # Ahora voy a probar el algoritmo de GIlbert
 # grafo.grafo_gilbert(200, 0.01, dirigido=False)
@@ -84,6 +84,9 @@ grafo.guardar_graphviz(nombre_archivo="grafo_malla.dot")
 # #print(grafo)
 # grafo.guardar_graphviz(nombre_archivo="grafo_geografico.dot")
 
+# Ahora voy a probar al algoritmo barabasi albert
+grafo.grafo_barabasi_albert(500, 5, dirigido=grafo.dirigido)
+grafo.guardar_graphviz(nombre_archivo="grafo_barabasi.dot")
 
 
 
