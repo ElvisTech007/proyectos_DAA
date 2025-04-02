@@ -4,17 +4,34 @@ import random
 from collections import OrderedDict
 from math import sqrt
 from itertools import combinations
-from random import choices, uniform
+from random import choices, uniform, choice
 from arista import Arista
 from nodo import Nodo
 
 
 class Grafo:
     """Un grafo esta definido como una dupla que consta de un conjunto de nodos
-    y un conjunto de aristas subconjunto potencia del conjunto de nodos"""
+    y un conjunto de aristas subconjunto potencia del conjunto de nodos
+    
+
+    Parameters
+    ----------
+    nombre_grafo : str, opcional
+        El nombre del grafo.
+    conjunto_nodos : OrderedDict, opcional
+        Lista de objetos Nodo que representan los nodos del grafo.
+    conjunto_aristas : OrderedDict
+        Lista de objetos Arista que representan las aristas del grafo.
+    dirigido : bool
+        Indica si el grafo es dirigido (True) o no dirigido (False).
+    """
 
     # Metodo especiales de la clase
-    def __init__(self, nombre_grafo="G", conjunto_nodos=OrderedDict(), conjunto_aristas=OrderedDict(), dirigido=False):
+    def __init__(self, nombre_grafo="G",
+        conjunto_nodos=OrderedDict(),
+        conjunto_aristas=OrderedDict(),
+        dirigido=False
+    ):
         """
         Constructor de la clase Grafo.
 
@@ -90,15 +107,27 @@ class Grafo:
         self.conjunto_nodos[nodo.etiqueta] = nodo
 
     def aniadir_arista(self, arista):
-        """
-        Añade una arista al grafo.
+        """Añade una arista al grafo y actualiza los vecinos de los nodos.
 
-        Parámetros
+        Añade una arista al grafo, conectando dos nodos y actualizando sus listas de vecinos.
+
+        Parameters
         ----------
         arista : Arista
             Objeto Arista que se va a añadir al grafo.
 
-        """
+        Raises
+        ------
+        ValueError
+            Si uno o ambos nodos de la arista no existen en el grafo.
+            Si uno o ambos nodos no tienen el atributo 'vecinos' en su diccionario de atributos.
+
+        Returns
+        -------
+        None
+            La función modifica el grafo en su lugar (self)."""
+
+
         nodo_1 = arista.nodo_1
         nodo_2 = arista.nodo_2
 
@@ -110,20 +139,42 @@ class Grafo:
         # Ahora modificamos el atributo de vecinos para ir agregando los vecinos:
         if hasattr(nodo_1, "atributos") and hasattr(nodo_2, "atributos"):
             # SI tienen el atributo de vecinos entonces:
-            # Añadimos los vecinos:
-            nodo_1.atributos["vecinos"].append(nodo_2)
-            nodo_2.atributos["vecinos"].append(nodo_1)
+            if "vecinos" in nodo_1.atributos and "vecinos" in nodo_2.atributos:
+                # Si tienen el atributo de vecinos entonces:
+                # Añadimos los vecinos:
+                nodo_1.atributos["vecinos"].append(nodo_2)
+                nodo_2.atributos["vecinos"].append(nodo_1)
+            else:
+                pass
         else:
             raise ValueError("Uno o ambos nodos no tienen atributo de vecinos")
         self.conjunto_aristas[(nodo_1, nodo_2)] = arista
 
     def obtener_nodo(self,etiqueta):
-        """Metodo para acceder a un nodo mediante su etiqueta"""
+        """Obtiene un nodo del grafo por su etiqueta.
+
+        Busca un nodo en el grafo utilizando su etiqueta única.
+
+        Parameters
+        ----------
+        etiqueta : int o str
+            Etiqueta del nodo que se desea obtener.
+
+        Returns
+        ----------
+        Nodo
+            El objeto Nodo correspondiente a la etiqueta dada.
+
+        Raises
+        ----------
+        ValueError
+            Si no existe un nodo con la etiqueta especificada.
+        """
         # Primero vamos a usar un diccionario para que sea mas facil 
         if etiqueta in self.conjunto_nodos.keys():
             return self.conjunto_nodos[etiqueta]
         else:
-            raise ValueError(f"El nodo {etiqueta} no existe") # O lanza una excepción personalizada
+            raise ValueError(f"El nodo {etiqueta} no existe")
 
     
     def es_vacio(self):
@@ -278,8 +329,8 @@ class Grafo:
         # Mientras no hayamos completado las conexiones
         while len(self.conjunto_aristas) < m:
             
-            # Ahora vamos a hacer random choice para elegir
-            nodo_1, nodo_2 = random.choice(lista_nodos), random.choice(lista_nodos)
+            # Ahora vamos a hacer choice para elegir
+            nodo_1, nodo_2 = choice(lista_nodos), choice(lista_nodos)
             arista_propuesta = Arista(nodo_1,nodo_2)
             if not self.emparejamiento_valido(arista_propuesta, self.dirigido):
                 #print(arista_propuesta, self.emparejamiento_valido(arista_propuesta))
@@ -289,7 +340,30 @@ class Grafo:
 
 
     def grafo_gilbert(self, n, p, dirigido=False):
-        """Genera grafo aleatorio con el modelo Gilbert."""
+        """Genera grafo aleatorio con el modelo Gilbert.
+
+        Genera un grafo aleatorio donde cada posible arista se crea con una probabilidad dada.
+
+        Parameters
+        ----------
+        n : int
+            Número total de nodos en el grafo generado.
+        p : float
+            Probabilidad de crear una arista entre dos nodos cualesquiera.
+        dirigido : bool, opcional
+            Indica si el grafo es dirigido (True) o no dirigido (False). El valor predeterminado es False.
+
+        Returns
+        -------
+        None
+            La función modifica el grafo en su lugar (self).
+
+        Notes
+        -----
+        El modelo Gilbert es un modelo de grafo aleatorio donde cada posible arista
+        se crea con una probabilidad fija p, independientemente de las demás aristas.
+        """
+
         # Primero generamos todos los nodos
         # Primero vamos  añadir todos esos m*n nodos:
         # Si el grafo no es vacio lo vaciamos xD
@@ -310,7 +384,32 @@ class Grafo:
                 self.aniadir_arista(arista_propuesta)
 
     def grafo_geografico(self, n, r, dirigido=False):
-        """Genera grafo aleatorio con el modelo geográfico simple."""
+        """Genera grafo aleatorio con el modelo geográfico simple.
+
+        Genera un grafo aleatorio donde los nodos se distribuyen uniformemente
+        en un espacio bidimensional (cuadrado unitario) y se conectan si la
+        distancia euclidiana entre ellos es menor o igual a un radio dado.
+
+        Parameters
+        ----------
+        n : int
+            Número total de nodos en el grafo generado.
+        r : float
+            Radio de conexión. Dos nodos se conectan si su distancia es menor o igual a r.
+        dirigido : bool, opcional
+            Indica si el grafo es dirigido (True) o no dirigido (False). El valor predeterminado es False.
+
+        Returns
+        -------
+        None
+            La función modifica el grafo en su lugar (self).
+
+        Notes
+        -----
+        El modelo geográfico simple genera grafos donde la conectividad depende de la
+        distancia espacial entre los nodos. Los nodos se distribuyen uniformemente
+        en un cuadrado unitario [0, 1] x [0, 1].
+        """
         # Primero generamos todos los nodos
         # Primero vamos  añadir todos esos m*n nodos:
         # Si el grafo no es vacio lo vaciamos xD
@@ -343,11 +442,27 @@ class Grafo:
 
 
     def grafo_barabasi_albert(self, n, d, dirigido=False):
-        """Genera grafo aleatorio con el modelo Barabasi-Albert.
-        Variante del modelo Gn,d Barabási-Albert. 
-        Colocar n nodos uno por uno, asignando a cada uno d aristas a vértices
-        distintos de tal manera que la probabilidad de que el vértice nuevo se conecte a un vértice existente 
-        v es proporcional a la cantidad de aristas que v tiene actualmente"""
+        """Genera grafo aleatorio con el modelo Barabási-Albert.
+
+        Variante del modelo Gn,d Barabási-Albert. Coloca n nodos uno por uno,
+        asignando a cada uno d aristas a vértices distintos, donde la probabilidad
+        de que el vértice nuevo se conecte a un vértice existente v es proporcional
+        a la cantidad de aristas que v tiene actualmente.
+
+        Parameters
+        ----------
+        n : int
+            Número total de nodos en el grafo generado.
+        d : int
+            Número máximo de aristas que se asignan a un nodo
+        dirigido : bool, opcional
+            Indica si el grafo es dirigido (True) o no dirigido (False). El valor predeterminado es False.
+
+        Returns
+        -------
+        None
+            La función modifica el grafo en su lugar (self).
+        """
 
         # Definimos nuestra función para calcular la probabilidad
         def formula_probabilidad(nodo, d):
@@ -412,8 +527,63 @@ class Grafo:
                         self.aniadir_arista(arista_propuesta)
 
     def grafo_dorogovtsev_mendes(self, n, dirigido=False):
-        """Genera grafo aleatorio con el modelo Dorogovtsev-Mendes."""
-        pass
+        """Genera grafo aleatorio con el modelo Dorogovtsev-Mendes.
+
+        El modelo Dorogovtsev-Mendes comienza con un triángulo inicial y, en cada paso, 
+        agrega un nuevo nodo conectado a los dos extremos de una arista elegida al azar.
+
+        Parameters
+        ----------
+        n : int
+            Número total de nodos en el grafo generado.
+        dirigido : bool, opcional
+            Indica si el grafo es dirigido (True) o no dirigido (False). El valor predeterminado es False.
+
+        Returns
+        -------
+        None
+
+        Notes
+        -----
+        El modelo Dorogovtsev-Mendes es un modelo de grafo de crecimiento que genera grafos libres de escala.
+        El grafo inicial es un triángulo (K3).
+        En cada paso, se selecciona una arista aleatoria y se
+        agrega un nuevo nodo conectado a los dos nodos de la arista seleccionada.
+        """
+
+        if not self.es_vacio():
+            self.conjunto_aristas = OrderedDict()
+            self.conjunto_nodos = OrderedDict()
+        # Generamos un triangulo al inicio
+        nodo_1, nodo_2, nodo_3 = Nodo(1), Nodo(2), Nodo(3)
+        self.aniadir_nodo(nodo_1)
+        self.aniadir_nodo(nodo_2)
+        self.aniadir_nodo(nodo_3)
+        # Ahora conectamos los 3 nodos:
+        self.aniadir_arista(Arista(nodo_1, nodo_2))
+        self.aniadir_arista(Arista(nodo_2, nodo_3))
+        self.aniadir_arista(Arista(nodo_1, nodo_3))
+        
+        del nodo_1
+        del nodo_2
+        del nodo_3
+
+        # Ahora ya tenemos el triangulo simplemente hacemos lo siguiente:
+        # Generamos n nodos:
+        for i in range(4, n+4):
+            # Creamos el nodo y lo agregamos:
+            nodo_creado = Nodo(i)
+            self.aniadir_nodo(nodo_creado)
+            # Primero seleccionamos un arista al azar
+            arista_elegida = choice(list(self.conjunto_aristas.values()))
+            # y conectamos nuestro nodo a esa arista:
+            arista_1 = Arista(nodo_creado, arista_elegida.nodo_1)
+            arista_2 = Arista(nodo_creado, arista_elegida.nodo_2)
+            # Validamos las conexiones y posteriormente agregamos:
+            if self.emparejamiento_valido(arista_1, self.dirigido):
+                self.aniadir_arista(arista_1)
+            if self.emparejamiento_valido(arista_2, self.dirigido):
+                self.aniadir_arista(arista_2)
 
     
     def guardar_graphviz(self,  nombre_archivo="graph.dot",directorio="proyecto_1/archivos_graphviz"):

@@ -85,10 +85,17 @@ grafo = Grafo("G_1",dirigido=False)
 # grafo.guardar_graphviz(nombre_archivo="grafo_geografico.dot")
 
 # Ahora voy a probar al algoritmo barabasi albert
-grafo.grafo_barabasi_albert(500, 5, dirigido=grafo.dirigido)
-grafo.guardar_graphviz(nombre_archivo="grafo_barabasi.dot")
+# grafo.grafo_barabasi_albert(500, 5, dirigido=grafo.dirigido)
+# grafo.guardar_graphviz(nombre_archivo="grafo_barabasi.dot")
+
+# #Ahora voy a probar al algoritmo barabasi albert
+# grafo.grafo_barabasi_albert(500, 5, dirigido=grafo.dirigido)
+# grafo.guardar_graphviz(nombre_archivo="grafo_barabasi.dot")
 
 
+#Ahora voy a probar al algoritmo barabasi albert
+grafo.grafo_dorogovtsev_mendes(500, dirigido=grafo.dirigido)
+grafo.guardar_graphviz(nombre_archivo="grafo_dorogostev_mendez.dot")
 
 # from collections import OrderedDict
 # from grafo import Grafo

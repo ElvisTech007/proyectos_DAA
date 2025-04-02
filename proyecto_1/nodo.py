@@ -79,7 +79,27 @@ class Nodo:
         return hash(self.etiqueta)  # Usamos la etiqueta como valor hash
 
     def obtener_grado(self):
-        """Método para obtener el grado de un nodo"""
+        
+        """Obtiene el grado de un nodo.
+
+        Calcula y devuelve el número de vecinos que tiene el nodo.
+
+        Returns
+        -------
+        int
+            El grado del nodo (número de vecinos).
+
+        Raises
+        ------
+        ValueError
+            Si el nodo no tiene el atributo 'atributos' o si no tiene la clave 'vecinos' en su diccionario de atributos.
+
+        Notes
+        -----
+        El grado de un nodo se define como el número de aristas que lo conectan a otros nodos.
+        Esta función asume que los nodos tienen un atributo 'atributos' que contiene un diccionario.
+        Este diccionario debe tener una clave 'vecinos' que es una lista de nodos vecinos.
+        """
         # Aquí debe de hacer algo para que haga eso jaja salu2
         if not hasattr(self, "atributos"):
             raise ValueError(f"El nodo no tiene diccionario de atributos")
