@@ -92,7 +92,7 @@ class Grafo:
         nodo_2 = arista.nodo_2
 
         # Asegurarse de que los nodos existen en el grafo
-        if nodo_1.etiqueta not in self.conjunto_nodos or nodo_2.etiqueta not in self.conjunto_nodos:
+        if nodo_1.etiqueta not in self.conjunto_nodos.keys() or nodo_2.etiqueta not in self.conjunto_nodos.keys():
             # Por si no existen
             raise ValueError("Uno o ambos nodos de la arista no existen en el grafo.")
 
@@ -104,7 +104,7 @@ class Grafo:
         if etiqueta in self.conjunto_nodos.keys():
             return self.conjunto_nodos[etiqueta]
         else:
-            return None  # O lanza una excepción personalizada
+            raise ValueError(f"El nodo {etiqueta} no existe") # O lanza una excepción personalizada
 
     def obtener_grado(self, nodo):
         """Método para obtener el grado de un nodo"""
@@ -197,16 +197,25 @@ class Grafo:
                 # es decir, su mod m es igual a 0
 
                 # SI no es igual no esta en la orilla
-                if (i)%m != 0:
+                esta_en_orilla = (i)%m == 0
+                esta_en_ultima_fila = i > m*(n-1)
+                if not esta_en_orilla:
                     arista_propuesta = Arista(self.obtener_nodo(i), self.obtener_nodo(i+1))
                     self.aniadir_arista(arista_propuesta)
                 
                 # Ahora para la arista que apunta hacia abajo tenemos que 
                 # mientras m*(n-1) que indica justamente la penultima fila
                 # que es la ultima que tiene conexiones hacia abajo
-                if i <= m*(n-1):
+                if not esta_en_ultima_fila:
                     arista_propuesta = Arista(self.obtener_nodo(i), self.obtener_nodo(i+m))
                     self.aniadir_arista(arista_propuesta)
+                # Nada mas por diversión le voy a agregar las diagonales a mi codigo
+                # que serían todos aquellas todas menos las que son multiplos de m
+                # o que sean de la penultima fila
+                if (not esta_en_orilla ) and (not esta_en_ultima_fila):
+                    arista_propuesta = Arista(self.obtener_nodo(i), self.obtener_nodo(i+(m+1)))
+                    self.aniadir_arista(arista_propuesta)
+
         # Eso debería ser todo
 
     def grafo_erdos_renyi(self, n, m, dirigido=False):
@@ -324,6 +333,15 @@ class Grafo:
         Colocar n nodos uno por uno, asignando a cada uno d aristas a vértices
         distintos de tal manera que la probabilidad de que el vértice nuevo se conecte a un vértice existente 
         v es proporcional a la cantidad de aristas que v tiene actualmente"""
+        # Conforme vamos generando los nodos vamos a tratar de conectar 
+        # los nodos anteriores con una función de probabilidad
+        # que se calcula como deg(r)/d 
+        # para esto deberíamos de mantener el registro de todos los nodos
+        # que estan conectados unos a los otros
+        # para esto usare al diccionario atributos con el atributo vecinos
+        # que será una lista
+
+        # También es importante recordar que 
         pass
 
     def grafo_dorogovtsev_mendes(self, n, dirigido=False):
