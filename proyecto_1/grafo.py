@@ -277,10 +277,10 @@ class Grafo:
                     self.aniadir_arista(arista_propuesta)
                 # Nada mas por diversión le voy a agregar las diagonales a mi codigo
                 # que serían todos aquellas todas menos las que son multiplos de m
-                # o que sean de la penultima fila
-                if (not esta_en_orilla ) and (not esta_en_ultima_fila):
-                    arista_propuesta = Arista(self.obtener_nodo(i), self.obtener_nodo(i+(m+1)))
-                    self.aniadir_arista(arista_propuesta)
+                # # o que sean de la penultima fila
+                # if (not esta_en_orilla ) and (not esta_en_ultima_fila):
+                #     arista_propuesta = Arista(self.obtener_nodo(i), self.obtener_nodo(i+(m+1)))
+                #     self.aniadir_arista(arista_propuesta)
 
         # Eso debería ser todo
 
@@ -570,7 +570,7 @@ class Grafo:
 
         # Ahora ya tenemos el triangulo simplemente hacemos lo siguiente:
         # Generamos n nodos:
-        for i in range(4, n+4):
+        for i in range(4, n+1):
             # Creamos el nodo y lo agregamos:
             nodo_creado = Nodo(i)
             self.aniadir_nodo(nodo_creado)
