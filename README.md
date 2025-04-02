@@ -10,6 +10,8 @@ Proyecto 1
 
 Este repositorio contiene una biblioteca orientada a objetos en Python 3 para describir y utilizar grafos. Incluye clases para representar grafos, nodos y aristas, así como funciones para generar grafos utilizando varios modelos comunes.
 
+![Grafo Aleatorio Barabasi 200 nodos](proyecto_1/imagenes_grafos/grafo_barabasi_200_nodos.png)
+
 ## Clases
 
 * **Grafo**: Representa un grafo con nodos y aristas.
