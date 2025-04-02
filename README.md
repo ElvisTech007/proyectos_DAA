@@ -121,7 +121,7 @@ Para utilizar esta biblioteca, importa las clases y funciones necesarias desde l
 
 1.  Clona el repositorio:
     ```bash
-    git clone git@github.com:ElvisTech007/proyectos_DAA.git
+    git clone https://github.com/ElvisTech007/proyectos_DAA.git
     ```
 2.  Ejecuta los scripts de Python para generar grafos y archivos GraphViz.
 3.  Utiliza Gephi para visualizar y generar imágenes de los grafos a partir de los archivos `.gv`.
