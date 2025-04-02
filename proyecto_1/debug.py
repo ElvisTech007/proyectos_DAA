@@ -64,10 +64,9 @@ from grafo import Grafo
 # Crear el grafo
 grafo = Grafo("G_1",dirigido=False)
 
-# # #Ahora voy a probar al algoritmo grafo_erdos_renyi
-# grafo.grafo_erdos_renyi(500, 1000, dirigido=False)
-# #print(grafo)
-# grafo.guardar_graphviz(nombre_archivo="grafo_erdos_renyi.dot")
+# #Ahora voy a probar al algoritmo grafo_erdos_renyi
+grafo.grafo_erdos_renyi(500, 1000, dirigido=False)
+grafo.guardar_graphviz(nombre_archivo="grafo_erdos_renyi.dot")
 
 # # Ahora voy a probar al algoritmo grafo_malla
 # grafo.grafo_malla(24,24)
