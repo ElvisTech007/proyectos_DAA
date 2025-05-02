@@ -636,20 +636,40 @@ class Grafo:
 
     def BFS(self, s):
         # Creamos un grafo vacío
-        arbol_BFS = Grafo("arbol_BFS" + self.nombre_grafo)
+        # Falta crear mi arbol
+        # arbol_BFS = Grafo("arbol_BFS" + self.nombre_grafo)
 
         for _,nodo in self.conjunto_nodos.items():
             nodo.atributos["visitado"] = False
         contador_capa = 0
+
+        s = self.obtener_nodo(s)
+
         lista_capas = {0:[s]}
 
         # Mientras la lista no esté vacía
         while lista_capas[contador_capa]:
+            # Añadimos la siguiente capa siendo vacia
+            lista_capas[contador_capa + 1] = []
+            
+
             for nodo in lista_capas[contador_capa]:
-                pass
-        return 
+                for nodo_vecino in nodo.atributos["vecinos"]:
+                    if not nodo_vecino.atributos["visitado"]:
+                        nodo_vecino.atributos["visitado"] = True
+                        lista_capas[contador_capa + 1].append(nodo_vecino)
+            contador_capa +=1
+        return lista_capas
+
     def DFS_R(self, s):
-        pass
+        # Leemos el nodo a través de la etiqueta
+        s = self.obtener_nodo(s)
+        s.atributos["visitado"] = True
+        for nodo_vecino in s.atributos["vecinos"]:
+            if not ("visitado" not in nodo_vecino.atributos):
+                DFS_R(nodo_vecino)
+
+                
     def DFS_I(self, s):
         pass
 
