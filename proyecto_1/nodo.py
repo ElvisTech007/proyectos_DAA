@@ -10,7 +10,7 @@ class Nodo:
         etiqueta del nodo
     """
 
-    def __init__(self, etiqueta, atributos={}):
+    def __init__(self, etiqueta, atributos=None):
         """
         Constructor de la clase Nodo.
 
@@ -22,8 +22,12 @@ class Nodo:
             Atributos del nodo
         """
         self.etiqueta = etiqueta
-        self.atributos = atributos if atributos is not None else {}
 
+        if atributos is None:
+            self.atributos =  {}
+        else:
+            self.atributos = atributos.copy()
+        
     def __str__(self):
         """
         Devuelve una representación en cadena del nodo.

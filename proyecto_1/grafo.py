@@ -91,6 +91,7 @@ class Grafo:
             True o False.
         """
         return random.choices([True, False], [p, 1-p])[0]
+
     # Metodos EXTRA del Grafo para poder manipular su información:
 
     def aniadir_nodo(self, nodo):   
@@ -135,17 +136,17 @@ class Grafo:
         if nodo_1.etiqueta not in self.conjunto_nodos.keys() or nodo_2.etiqueta not in self.conjunto_nodos.keys():
             # Por si no existen
             raise ValueError("Uno o ambos nodos de la arista no existen en el grafo.")
-
-        # Ahora modificamos el atributo de vecinos para ir agregando los vecinos:
+        # Comprobamos si tiene el atributo
         if hasattr(nodo_1, "atributos") and hasattr(nodo_2, "atributos"):
-            # SI tienen el atributo de vecinos entonces:
-            if "vecinos" in nodo_1.atributos and "vecinos" in nodo_2.atributos:
-                # Si tienen el atributo de vecinos entonces:
-                # Añadimos los vecinos:
-                nodo_1.atributos["vecinos"].append(nodo_2)
-                nodo_2.atributos["vecinos"].append(nodo_1)
-            else:
-                pass
+            # Si no están, entonces inicializamos el atributo de vecinos
+            if "vecinos" not in nodo_1.atributos:
+                nodo_1.atributos["vecinos"] = []
+            if "vecinos" not in nodo_2.atributos:
+                nodo_2.atributos["vecinos"] = []
+            # Y cuando ya es seguro que lo tengan agregamos 
+            # los vecinos los unos al los otros
+            nodo_1.atributos["vecinos"].append(nodo_2)
+            nodo_2.atributos["vecinos"].append(nodo_1)
         else:
             raise ValueError("Uno o ambos nodos no tienen atributo de vecinos")
         self.conjunto_aristas[(nodo_1, nodo_2)] = arista
@@ -494,7 +495,7 @@ class Grafo:
         # Creando los nodos:
         for etiqueta  in etiquetas_nodos:
             # Creamos los nodos con un atributo vecinos que es una lista
-            nodo_creado = Nodo(etiqueta , {"vecinos":[]})
+            nodo_creado = Nodo(etiqueta, {"vecinos":[]})
             self.aniadir_nodo(nodo_creado)
             # Para cada nodo que ya está en 
             for nodo in self.conjunto_nodos.values():
@@ -625,4 +626,36 @@ class Grafo:
                 archivo_dot.write(f"    {arista.nodo_1}{apuntador}{arista.nodo_2};\n")
             archivo_dot.write("}")
         print(f"Grafo guardado en: {ruta_completa}")
+
+    # --- PARTE DEL PROYECTO 2 ---
+
+    # Utilizando la biblioteca de grafos desarrollada en el proyecto 1, 
+    # implementar los algoritmos BFS y DFS (recursivo e iterativo) de tal forma que dado un nodo fuente (s)
+    # calculen el árbol inducido por los algoritmos mencionados
+    # es decir, desarrollar los métodos en la clase Grafo:
+
+    def BFS(self, s):
+        # Creamos un grafo vacío
+        arbol_BFS = Grafo("arbol_BFS" + self.nombre_grafo)
+
+        for _,nodo in self.conjunto_nodos.items():
+            nodo.atributos["visitado"] = False
+        contador_capa = 0
+        lista_capas = {0:[s]}
+
+        # Mientras la lista no esté vacía
+        while lista_capas[contador_capa]:
+            for nodo in lista_capas[contador_capa]:
+                pass
+        return 
+    def DFS_R(self, s):
+        pass
+    def DFS_I(self, s):
+        pass
+
+    # Entregables, en el repositorio:
+    # Código fuente
+    # Archivos de grafos generados. Tres por cada generador (con 30, 100 y 500 nodos).
+    # Archivos de grafos calculados. Tres por cada grafo generado (un BFS y dos DFS).
+    # Imágenes de la visualización de cada grafo (generados y calculados).
         
