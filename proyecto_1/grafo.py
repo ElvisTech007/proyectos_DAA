@@ -177,7 +177,18 @@ class Grafo:
         else:
             raise ValueError(f"El nodo {etiqueta} no existe")
 
-    
+    def obtener_arista(self, nodo_1, nodo_2):
+        # Primero verificamos la dirección original de la arista
+        if (nodo_1,nodo_2) in self.conjunto_aristas.keys():
+            return self.conjunto_aristas[(nodo_1,nodo_2)]
+        # Si no esta, debemos revisar la otra dirección solo si
+        # el grafo no es dirigido:
+        elif not self.dirigido:
+            if (nodo_2,nodo_1) in self.conjunto_aristas.keys():
+                return self.conjunto_aristas[(nodo_2,nodo_1)]
+        else:
+            raise ValueError(f"La arista {(nodo_1,nodo_2)} no existe")
+
     def es_vacio(self):
         """
         Verifica si el grafo está vacío.
@@ -635,12 +646,15 @@ class Grafo:
     # es decir, desarrollar los métodos en la clase Grafo:
 
     def BFS(self, s):
+        # Obtenemos bien el nodo
+        s = self.obtener_nodo(s)
+
         # Inicializamos el árbol que está vacio
-        # arbol_BFS = Grafo("arbol_BFS" + self.nombre_grafo)
+        arbol_BFS = Grafo("arbol_BFS_" + self.nombre_grafo)
         # Añadimos el nodo
+        arbol_BFS.aniadir_nodo(s)
         contador_capa = 0
 
-        s = self.obtener_nodo(s)
         # Nuestro diccionario de capas
         lista_capas = {0:[s]}
 
@@ -651,10 +665,15 @@ class Grafo:
             for nodo in lista_capas[contador_capa]:
                 for nodo_vecino in nodo.atributos["vecinos"]:
                     if "visitado" not in nodo_vecino.atributos:
+                        # Marcamos como visitado
                         nodo_vecino.atributos["visitado"] = True
+                        # Añadimos esta conexión al arbol:
+                        arbol_BFS.aniadir_nodo(nodo_vecino)
+                        conexion = self.obtener_arista(nodo, nodo_vecino)
+                        arbol_BFS.aniadir_arista(conexion)
                         lista_capas[contador_capa + 1].append(nodo_vecino)
             contador_capa +=1
-        return lista_capas
+        return arbol_BFS, lista_capas
 
     def DFS_R(self, s):
         # Leemos el nodo a través de la etiqueta
@@ -685,7 +704,6 @@ class Grafo:
             for nodo_vecino in nodo_visitado.atributos["vecinos"]:
                 if "visitado" not in nodo_vecino.atributos:
                     pila.append(nodo_vecino)
-        # return lista_capas
 
     # Entregables, en el repositorio:
     # Código fuente
