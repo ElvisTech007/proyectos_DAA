@@ -1,3 +1,5 @@
+import copy
+
 class Nodo:
     """
     Representa una arista en un grafo.
@@ -81,6 +83,31 @@ class Nodo:
             El valor hash del nodo.
         """
         return hash(self.etiqueta)  # Usamos la etiqueta como valor hash
+
+    # Metodo para copiar 
+    def __deepcopy__(self,memo):
+        """
+        Crea y devuelve una copia profunda de la instancia del Nodo.
+
+        Parámetros
+        ----------
+        memo : dict
+            Diccionario utilizado por copy.deepcopy() para recordar los objetos ya copiados.
+
+        Devuelve
+        -------
+        Nodo
+            Una nueva instancia de Nodo que es una copia profunda de la original.
+        """
+        # Verificar si ya se ha copiado este objeto Nodo
+        if id(self) in memo:
+            return memo[id(self)]
+        # Creamos un nuevo nodo
+        nuevo_nodo = Nodo(self.etiqueta)
+        # copiamos los atributos
+        nuevo_nodo.atributos = copy.deepcopy(self.atributos, memo)
+        memo[id(self)] = nuevo_nodo
+        return nuevo_nodo
 
     def obtener_grado(self):
         

@@ -1,5 +1,5 @@
 from nodo import Nodo
-
+import copy
 
 class Arista:
     """
@@ -89,3 +89,22 @@ class Arista:
         # Usamos una tupla inmutable de los nodos para calcular el hash.
         # El orden de los nodos es importante para grafos dirigidos.
         return hash((self.nodo_1, self.nodo_2))
+    
+    def __deepcopy__(self, memo):
+        # vemos si ya estaba copiado
+        if id(self) in memo:
+            return memo[id(self)]
+        # Hacmoes una copia de los atributos de una instancia arista
+        # los cuales sean mutables, es decir los nodos
+        # y le pasamos el diccionario de copias
+        nodo_1_copia = copy.deepcopy(self.nodo_1, memo)
+        nodo_2_copia = copy.deepcopy(self.nodo_2, memo)
+        # El peso es inmutable por que es un entero on un float
+        # Ahora los atributos
+        copia_atributos = copy.deepcopy(self.atributos, memo)
+        # Ahora creamos una nueva arista:
+        nueva_arista = Arista(nodo_1_copia, nodo_2_copia, self.peso, copia_atributos)
+        # Le pasamos al diccionario de copias el id
+        memo[id(self)] = nueva_arista
+
+        return nueva_arista

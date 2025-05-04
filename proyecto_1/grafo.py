@@ -1,6 +1,7 @@
 import os
 import random
 
+from copy import deepcopy
 from collections import OrderedDict, deque
 from math import sqrt
 from itertools import combinations
@@ -28,8 +29,8 @@ class Grafo:
 
     # Metodo especiales de la clase
     def __init__(self, nombre_grafo="G",
-        conjunto_nodos=OrderedDict(),
-        conjunto_aristas=OrderedDict(),
+        conjunto_nodos=None,
+        conjunto_aristas=None,
         dirigido=False
     ):
         """
@@ -47,9 +48,11 @@ class Grafo:
             Indica si el grafo es dirigido (True) o no dirigido (False).
         """
         self.nombre_grafo = nombre_grafo
-        self.conjunto_nodos = conjunto_nodos  # Debería ser una lista de nodos
+        # Se crea uno nuevo cuando no se le pasa uno
+        self.conjunto_nodos = OrderedDict() if conjunto_nodos is None else conjunto_nodos.copy()
         # Diccionario por si se le quiere añadir más cosas en un futuro
-        self.conjunto_aristas = conjunto_aristas  # lista de aristas suponiendo que todo chido xd
+        # misma forma que lo anterior
+        self.conjunto_aristas = OrderedDict() if conjunto_aristas is None else conjunto_aristas.copy() 
         self.dirigido = dirigido  # booleano para ver si es dirigido
 
     def __str__(self):
@@ -331,8 +334,8 @@ class Grafo:
 
         # Si el nodo no es vacio lo vaciamos xD
         if not self.es_vacio():
-            self.lista_nodos = OrderedDict()
-            self.lista_aristas = OrderedDict()
+            self.conjunto_nodos = OrderedDict()
+            self.conjunto_aristas = OrderedDict()
         
         # Ahora si generamos nuestra lista de n nodos
         # del 1 al n
@@ -648,11 +651,12 @@ class Grafo:
     def BFS(self, s):
         # Obtenemos bien el nodo
         s = self.obtener_nodo(s)
-
+        s.atributos["visitado"] = True
         # Inicializamos el árbol que está vacio
         arbol_BFS = Grafo("arbol_BFS_" + self.nombre_grafo)
         # Añadimos el nodo
         arbol_BFS.aniadir_nodo(s)
+
         contador_capa = 0
 
         # Nuestro diccionario de capas
@@ -668,8 +672,8 @@ class Grafo:
                         # Marcamos como visitado
                         nodo_vecino.atributos["visitado"] = True
                         # Añadimos esta conexión al arbol:
-                        arbol_BFS.aniadir_nodo(nodo_vecino)
                         conexion = self.obtener_arista(nodo, nodo_vecino)
+                        arbol_BFS.aniadir_nodo(nodo_vecino)
                         arbol_BFS.aniadir_arista(conexion)
                         lista_capas[contador_capa + 1].append(nodo_vecino)
             contador_capa +=1
@@ -710,4 +714,4 @@ class Grafo:
     # Archivos de grafos generados. Tres por cada generador (con 30, 100 y 500 nodos).
     # Archivos de grafos calculados. Tres por cada grafo generado (un BFS y dos DFS).
     # Imágenes de la visualización de cada grafo (generados y calculados).
-        
+         

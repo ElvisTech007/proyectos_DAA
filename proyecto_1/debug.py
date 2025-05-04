@@ -6,11 +6,11 @@ from grafo import Grafo
 
 grafo = Grafo("G_1")
 
-grafo.grafo_erdos_renyi(10, 15, dirigido=False)
-
-arbol,_ = grafo.BFS(1)
+grafo.grafo_geografico(500,0.2, dirigido=False)
 print(grafo)
-print(_)
+arbol,_ = grafo.BFS(1)
+print(arbol)
+arbol.guardar_graphviz("PRUEBA_BFS.dot")
 #arbol.guardar_graphviz("PRUEBA_BFS.dot")
 #grafo.guardar_graphviz("pruebaXDDD.dot", "./")
 #for _,nodo in grafo.conjunto_nodos.items():
