@@ -689,13 +689,9 @@ class Grafo:
 
                 
     def DFS_I(self, s):
-        # Creamos un grafo vacío
-        # Falta crear mi arbol
-        # arbol_BFS = Grafo("arbol_BFS" + self.nombre_grafo)
-
-        # for _,nodo in self.conjunto_nodos.items():
-        #     nodo.atributos["visitado"] = False
+        # Obtenemos el nodo
         s = self.obtener_nodo(s)
+
         pila = deque([s])
 
         # Mientras la pila no esté vacía
@@ -703,11 +699,14 @@ class Grafo:
             # Añadimos la siguiente capa siendo vacia
             # lista_capas[contador_capa + 1] = []
             nodo_visitado = pila.pop()
+            if "visitado" in nodo_visitado.atributos:
+                continue
             nodo_visitado.atributos["visitado"] = True
 
             for nodo_vecino in nodo_visitado.atributos["vecinos"]:
                 if "visitado" not in nodo_vecino.atributos:
                     pila.append(nodo_vecino)
+        #return arbol_DFS
 
     # Entregables, en el repositorio:
     # Código fuente
