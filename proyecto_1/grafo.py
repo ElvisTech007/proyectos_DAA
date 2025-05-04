@@ -681,7 +681,14 @@ class Grafo:
 
     def DFS_R(self, s):
         # Leemos el nodo a través de la etiqueta
+        if not hasattr(self.DFS_R, "arbol_DFS"):
+            self.DFS_R.arbol_DFS = Grafo("arbol_BFS_" + self.nombre_grafo)
+            
         s = self.obtener_nodo(s)
+
+        if not hasattr(self.DFS_R, "padre"):
+            self.DFS_R.padre = s
+        
         s.atributos["visitado"] = True
         for nodo_vecino in s.atributos["vecinos"]:
             if "visitado" not in nodo_vecino.atributos:
