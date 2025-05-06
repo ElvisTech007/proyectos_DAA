@@ -719,7 +719,7 @@ class Grafo:
                 self.DFS_R(nodo_vecino.etiqueta, s, arbol_DFS)
         return arbol_DFS
 
-                
+    #TODO Construir arbol aquí
     def DFS_I(self, s):
         # Obtenemos el nodo
         s = self.obtener_nodo(s)
@@ -728,8 +728,6 @@ class Grafo:
 
         # Mientras la pila no esté vacía
         while pila:
-            # Añadimos la siguiente capa siendo vacia
-            # lista_capas[contador_capa + 1] = []
             nodo_visitado = pila.pop()
             if "visitado" in nodo_visitado.atributos:
                 continue
