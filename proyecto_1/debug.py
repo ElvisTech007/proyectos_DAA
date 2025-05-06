@@ -6,10 +6,12 @@ from grafo import Grafo
 
 grafo = Grafo("G_1")
 
-# grafo.grafo_geografico(500,0.2, dirigido=False)
-grafo.grafo_erdos_renyi(5,10, dirigido=False)
-print(grafo)
-arbol = grafo.DFS_I(1)
+#grafo.grafo_geografico(500,0.2, dirigido=False)
+grafo.grafo_erdos_renyi(500,2000, dirigido=False)
+#print(grafo)
+arbol = grafo.DFS_R(1)
+arbol.guardar_graphviz("PRUEBA_DFS.dot")
+#print(arbol)
 # arbol,_ = grafo.BFS_I(1)
 # print(arbol)
 # arbol.guardar_graphviz("PRUEBA_BFS.dot")

@@ -672,27 +672,52 @@ class Grafo:
                         # Marcamos como visitado
                         nodo_vecino.atributos["visitado"] = True
                         # Añadimos esta conexión al arbol:
-                        conexion = self.obtener_arista(nodo, nodo_vecino)
+                        conexion = Arista(nodo, nodo_vecino)
                         arbol_BFS.aniadir_nodo(nodo_vecino)
                         arbol_BFS.aniadir_arista(conexion)
                         lista_capas[contador_capa + 1].append(nodo_vecino)
             contador_capa +=1
         return arbol_BFS, lista_capas
 
-    def DFS_R(self, s):
-        # Leemos el nodo a través de la etiqueta
-        if not hasattr(self.DFS_R, "arbol_DFS"):
-            self.DFS_R.arbol_DFS = Grafo("arbol_BFS_" + self.nombre_grafo)
-            
+    def DFS_R(self, s, nodo_padre = None, arbol_DFS = None):
+        # Si no hemos incializado el arbol es
+        # La primera iteración
+        if arbol_DFS == None:
+            # Incializamos el arbol
+            arbol_DFS = Grafo("arbol_BFS_" + self.nombre_grafo)
+            # añadimos el nodo de inicio al arbol
+            nodo_raiz = self.obtener_nodo(s)
+            arbol_DFS.aniadir_nodo(nodo_raiz)
+        # Obtenemos el nodo
         s = self.obtener_nodo(s)
-
-        if not hasattr(self.DFS_R, "padre"):
-            self.DFS_R.padre = s
-        
+        # Lo añadimos al arbol
+        # arbol_DFS.aniadir_nodo(s)
+        # Marcamos como visitado
         s.atributos["visitado"] = True
+
+        # Si no es el nodo raíz, añadimos la conexión al padre
+        if nodo_padre is not None:
+            # Creamos la conexión entre el nodo padre y el nodo actual (s)
+            conexion = self.obtener_arista(nodo_padre, s)
+            arbol_DFS.aniadir_nodo(s)
+            arbol_DFS.aniadir_arista(conexion)
+        elif len(arbol_DFS.conjunto_nodos) == 0: # Aseguramos que la raíz se añada si el bloque anterior no se ejecutó
+            arbol_DFS.aniadir_nodo(s)
+
+        # Para cada vecino que tenga
         for nodo_vecino in s.atributos["vecinos"]:
+            # Si no está visitado entonces
             if "visitado" not in nodo_vecino.atributos:
-                self.DFS_R(nodo_vecino.etiqueta)
+                # Si ya hay un nodo padre entonces
+                if nodo_padre is not None:
+                    # Creamos la conexión entre
+                    # el nodo padre y el nodo que estamos descubriendo que es s
+                    conexion = self.obtener_arista(nodo_padre, s)
+                        #arbol_BFS.aniadir_nodo(nodo_vecino)
+                    arbol_DFS.aniadir_arista(conexion)
+                # Llamada recurisva para descubrir el siguiente nodo
+                self.DFS_R(nodo_vecino.etiqueta, s, arbol_DFS)
+        return arbol_DFS
 
                 
     def DFS_I(self, s):
