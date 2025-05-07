@@ -7,9 +7,10 @@ from grafo import Grafo
 grafo = Grafo("G_1")
 
 #grafo.grafo_geografico(500,0.2, dirigido=False)
-grafo.grafo_erdos_renyi(5,10, dirigido=False)
+grafo.grafo_malla(10,10, dirigido=False)
 #print(grafo)
-arbol = grafo.DFS_I(1)
+arbol = grafo.DFS_R(1)
+arbol.guardar_graphviz("PRUEBA_DFS_R.dot")
 print(grafo)
 print(arbol)
 #arbol.guardar_graphviz("PRUEBA_DFS.dot")
