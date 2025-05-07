@@ -684,7 +684,7 @@ class Grafo:
         # La primera iteración
         if arbol_DFS == None:
             # Incializamos el arbol
-            arbol_DFS = Grafo("arbol_BFS_" + self.nombre_grafo)
+            arbol_DFS = Grafo("arbol_DFS_R_" + self.nombre_grafo)
             # añadimos el nodo de inicio al arbol
             nodo_raiz = self.obtener_nodo(s)
             arbol_DFS.aniadir_nodo(nodo_raiz)
@@ -721,22 +721,35 @@ class Grafo:
 
     #TODO Construir arbol aquí
     def DFS_I(self, s):
-        # Obtenemos el nodo
+        # Primero vamos a inicializar el árbol:
+        arbol_DFS = Grafo("arbol_DFS_I_" + self.nombre_grafo)
+        # Obtenemos el nodo raíz
         s = self.obtener_nodo(s)
 
-        pila = deque([s])
+        # Va a ser una pila de tuplas
+        # donde cuando se llama al nodo
+        # entonces también se adjunta la referncia a su padre
+        pila = deque([(s,None)])
+        # Conjunto vacío
+        nodos_visitados = set()
 
         # Mientras la pila no esté vacía
         while pila:
-            nodo_visitado = pila.pop()
-            if "visitado" in nodo_visitado.atributos:
-                continue
-            nodo_visitado.atributos["visitado"] = True
-
+            nodo_visitado, nodo_padre = pila.pop()
+            if nodo_visitado in nodos_visitados: continue
+            # Marcamos como nodo visitado
+            nodos_visitados.add(nodo_visitado)
+            arbol_DFS.aniadir_nodo(nodo_visitado)
+            # Si no es el nodo raíz entonces generamos
+            # la conexión con el padre
+            if nodo_padre is not None:
+                conexion = Arista(nodo_padre, nodo_visitado)
+                arbol_DFS.aniadir_arista(conexion)
+            # Ahora tomamos cada vecino de ese nodo
             for nodo_vecino in nodo_visitado.atributos["vecinos"]:
-                if "visitado" not in nodo_vecino.atributos:
-                    pila.append(nodo_vecino)
-        #return arbol_DFS
+                if nodo_vecino not in nodos_visitados:
+                    pila.append((nodo_vecino, nodo_visitado))
+        return arbol_DFS
 
     # Entregables, en el repositorio:
     # Código fuente
