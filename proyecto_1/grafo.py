@@ -3,7 +3,8 @@ import random
 
 from copy import deepcopy
 from collections import OrderedDict, deque
-from math import sqrt
+import heapq
+from math import sqrt, inf
 from itertools import combinations
 from random import choices, uniform, choice
 from arista import Arista
@@ -756,4 +757,29 @@ class Grafo:
     # Archivos de grafos generados. Tres por cada generador (con 30, 100 y 500 nodos).
     # Archivos de grafos calculados. Tres por cada grafo generado (un BFS y dos DFS).
     # Imágenes de la visualización de cada grafo (generados y calculados).
+
+    # Utilizando la biblioteca de grafos desarrollada en el proyecto 1, implementar el algoritmo de Dijkstra de tal forma que dado un nodo fuente (s), calcule el árbol de caminos más cortos; es decir, desarrollar el método en la clase Grafo:
+    # def Dijkstra(self, s):
+
+    # Entregables en el repositorio:
+    # Código fuente
+    # Archivos de grafos generados. Dos por cada generador aleatorio (uno con "pocos" y otro con "muchos" nodos).
+    # Archivos de grafos calculados. Se debe poder visualizar la distancia que se calculó al nodo origen. Si el nodo original se llama "nodo_2", en el nodo resultante debe llamarse "nodo_2 (22.45)" (dónde 22.45 es la distancia del "nodo_2" al nodo de origen.
+    # Imágenes de la visualización de cada grafo (generados y calculados)
+    def Dijkstra(self, s):
+        # Obtenemos el nodo raíz
+        s = self.obtener_nodo(s)
+        # Algoritmo de dijsktra
+        cola_prioridad = []
+        visitados = set()
+        for nodo in [n for n in self.conjunto_nodos.values() if n != s]:
+            heapq.heappush(cola_prioridad, (inf, nodo))
+        heapq.heappush(cola_prioridad, (0, s))
+        while cola_prioridad:
+            u = heapq.heappop(cola_prioridad)
+            visitados.add(u)
+            for nodo_vecino in u.atributos["vecinos"]:
+                if v not in visitados:
+                    # Actualizar los valores de la que
+                    pass
          
