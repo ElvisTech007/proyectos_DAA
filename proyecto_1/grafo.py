@@ -3,7 +3,8 @@ import random
 
 from copy import deepcopy
 from collections import OrderedDict, deque
-import heapq
+# Lista de prioridades actualizable
+from heapdict import heapdict
 from math import sqrt, inf
 from itertools import combinations
 from random import choices, uniform, choice
@@ -767,19 +768,28 @@ class Grafo:
     # Archivos de grafos calculados. Se debe poder visualizar la distancia que se calculó al nodo origen. Si el nodo original se llama "nodo_2", en el nodo resultante debe llamarse "nodo_2 (22.45)" (dónde 22.45 es la distancia del "nodo_2" al nodo de origen.
     # Imágenes de la visualización de cada grafo (generados y calculados)
     def Dijkstra(self, s):
+        #TODO hacer el arbol
+
         # Obtenemos el nodo raíz
         s = self.obtener_nodo(s)
         # Algoritmo de dijsktra
-        cola_prioridad = []
+        cola_prioridad = heapdict()
         visitados = set()
         for nodo in [n for n in self.conjunto_nodos.values() if n != s]:
-            heapq.heappush(cola_prioridad, (inf, nodo))
-        heapq.heappush(cola_prioridad, (0, s))
+            # Asignamos infinito a delmin a todos los nodos menos s
+            cola_prioridad[nodo] = inf
+        # Al nodo raíz asignamos 0
+        cola_prioridad[s] = 0
+
+        # Mientras la cola no esté vacía
         while cola_prioridad:
-            u = heapq.heappop(cola_prioridad)
+            u, dist_u = cola_prioridad.popitem()
             visitados.add(u)
             for nodo_vecino in u.atributos["vecinos"]:
-                if v not in visitados:
-                    # Actualizar los valores de la que
-                    pass
+                arista = self.obtener_arista(u, nodo_vecino)
+                # Obtener peso:
+                peso_arista = arista.atributos["peso"]
+                if nodo_vecino not in visitados:
+                    if cola_prioridad[nodo_vecino] > dist_u + peso_arista:
+                        cola_prioridad[nodo_vecino] = dist_u + peso_arista
          
