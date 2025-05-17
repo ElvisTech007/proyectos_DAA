@@ -1,0 +1,21 @@
+graph arbol_dijkstra_G_1 {
+    "1" [label="Raiz 1"];
+    "3" [label="Nodo 3 (7)"];
+    "10" [label="Nodo 10 (19)"];
+    "5" [label="Nodo 5 (27)"];
+    "7" [label="Nodo 7 (32)"];
+    "8" [label="Nodo 8 (33)"];
+    "2" [label="Nodo 2 (35)"];
+    "9" [label="Nodo 9 (37)"];
+    "4" [label="Nodo 4 (40)"];
+    "6" [label="Nodo 6 (58)"];
+    2 -- 7 [label="3"];
+    3 -- 1 [label="7"];
+    4 -- 8 [label="7"];
+    3 -- 5 [label="20"];
+    6 -- 8 [label="25"];
+    1 -- 7 [label="32"];
+    3 -- 8 [label="26"];
+    9 -- 3 [label="30"];
+    1 -- 10 [label="19"];
+}

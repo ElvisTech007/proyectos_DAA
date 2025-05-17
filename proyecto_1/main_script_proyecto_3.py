@@ -12,7 +12,7 @@ from grafo import Grafo
 
 
 
-cantidad_nodos = [50]#[50, 500]
+cantidad_nodos = [500]#[50, 500]
 #dimensiones_malla = [(8, 8), (23, 23)]
 grafo = Grafo("G_1")
 
@@ -27,7 +27,8 @@ for numero_nodos in cantidad_nodos:
     grafo.grafo_erdos_renyi(numero_nodos, numero_nodos*5, dirigido=False)
     grafo.inicializar_pesos_aleatorios()
     arbol_dijsktra = grafo.Dijkstra(1)
-    arbol_dijsktra.guardar_graphviz(nombre_archivo="arbol_Dijkstra_erdos_renyi_PRUEBA.dot", mostrar_pesos=True)
+    #arbol_Dijkstra_erdos_renyi_PRUEBA.dot
+    arbol_dijsktra.guardar_graphviz(nombre_archivo="AAAPRUEBAAAAA_" + str(numero_nodos) + ".dot", mostrar_pesos=True)
     # print(arbol_dijsktra)
     #arbol_dijsktra.guardar_graphviz(nombre_archivo="grafo_erdos_renyi_" + str(numero_nodos) + "_nodos.dot")
 

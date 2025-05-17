@@ -645,7 +645,10 @@ class Grafo:
                     archivo_dot.write(f"    {nodo};\n")
                 else:
                     peso = self.conjunto_nodos[nodo].atributos["distancia"]
-                    archivo_dot.write(f"    {nodo} [label=\"Distancia:\n{peso}\"];\n")
+                    if peso == 0:
+                        archivo_dot.write(f"    \"{nodo}\" [label=\"Raiz {nodo}\"];\n")
+                    else:
+                        archivo_dot.write(f"    \"{nodo}\" [label=\"Nodo {nodo} ({peso})\"];\n")
 
             for arista in self.conjunto_aristas.values():
                 if not mostrar_pesos:
