@@ -1,6 +1,7 @@
 import os
 import random
 
+
 from copy import deepcopy
 from collections import OrderedDict, deque
 # Lista de prioridades actualizable
@@ -97,7 +98,10 @@ class Grafo:
         """
         return random.choices([True, False], [p, 1-p])[0]
 
-    # Metodos EXTRA del Grafo para poder manipular su información:
+    def inicializar_pesos_aleatorios(self, rango_inferior=1, rango_superior=100):
+        # Añadimos los pesos en las aristas:
+        for arista in self.conjunto_aristas.values():
+            arista.atributos["peso"] = random.randint(rango_inferior,rango_superior)
 
     def aniadir_nodo(self, nodo):   
         """
@@ -603,7 +607,7 @@ class Grafo:
                 self.aniadir_arista(arista_2)
 
     
-    def guardar_graphviz(self,  nombre_archivo="graph.dot",directorio="proyecto_1/archivos_graphviz"):
+    def guardar_graphviz(self,  nombre_archivo="graph.dot", mostrar_pesos = False, directorio="proyecto_1/archivos_graphviz"):
         """
         Guarda el grafo en un archivo con formato Graphviz.
 
@@ -637,9 +641,18 @@ class Grafo:
                 archivo_dot.write(f"digraph {self.nombre_grafo} {{\n")
 
             for nodo in self.conjunto_nodos.keys():
-                archivo_dot.write(f"    {nodo};\n")
+                if not mostrar_pesos:
+                    archivo_dot.write(f"    {nodo};\n")
+                else:
+                    peso = self.conjunto_nodos[nodo].atributos["distancia"]
+                    archivo_dot.write(f"    {nodo} [label=\"Distancia:\n{peso}\"];\n")
+
             for arista in self.conjunto_aristas.values():
-                archivo_dot.write(f"    {arista.nodo_1}{apuntador}{arista.nodo_2};\n")
+                if not mostrar_pesos:
+                    archivo_dot.write(f"    {arista.nodo_1}{apuntador}{arista.nodo_2};\n")
+                else:
+                    peso = arista.atributos["peso"]
+                    archivo_dot.write(f"    {arista.nodo_1}{apuntador}{arista.nodo_2} [label=\"{peso}\"];\n")
             archivo_dot.write("}")
         print(f"Grafo guardado en: {ruta_completa}")
 
@@ -769,7 +782,9 @@ class Grafo:
     # Imágenes de la visualización de cada grafo (generados y calculados)
     def Dijkstra(self, s):
         #TODO hacer el arbol
-
+        # Primero vamos a inicializar el árbol:
+        arbol_dijkstra = Grafo("arbol_dijkstra_" + self.nombre_grafo)
+        # inicializamos los predecesores de los nodos
         # Obtenemos el nodo raíz
         s = self.obtener_nodo(s)
         # Algoritmo de dijsktra
@@ -778,18 +793,39 @@ class Grafo:
         for nodo in [n for n in self.conjunto_nodos.values() if n != s]:
             # Asignamos infinito a delmin a todos los nodos menos s
             cola_prioridad[nodo] = inf
+            nodo.atributos["padre"] = None
         # Al nodo raíz asignamos 0
         cola_prioridad[s] = 0
 
         # Mientras la cola no esté vacía
         while cola_prioridad:
             u, dist_u = cola_prioridad.popitem()
+            u.atributos["distancia"] = dist_u
             visitados.add(u)
+            
+            # Aquí agregamos al nodo por que ya lo estamos visitando:
+            arbol_dijkstra.aniadir_nodo(u)
+
             for nodo_vecino in u.atributos["vecinos"]:
                 arista = self.obtener_arista(u, nodo_vecino)
                 # Obtener peso:
                 peso_arista = arista.atributos["peso"]
+                # Si no hemos encontrado el camino minimo hacia el nodo
                 if nodo_vecino not in visitados:
+                    # Si encontramos un camino más corto
                     if cola_prioridad[nodo_vecino] > dist_u + peso_arista:
                         cola_prioridad[nodo_vecino] = dist_u + peso_arista
-         
+                        # Y actualizamos cual es el padre para luego armar el árbol:
+                        nodo_vecino.atributos["padre"] = u
+        
+        # Ahora armamos el arbol:
+        for nodo in self.conjunto_nodos.values():
+            if nodo == s:
+                continue
+            padre = nodo.atributos["padre"]
+            # Agregamos esa arista entre el nodo y el padre:
+            arista = self.obtener_arista(nodo, padre)
+            # añadimos esa misma arista
+            arbol_dijkstra.aniadir_arista(arista)
+        
+        return arbol_dijkstra

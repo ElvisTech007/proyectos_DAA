@@ -17,7 +17,7 @@ class Arista:
         Peso asociado a la arista. El valor predeterminado es 1.
     """
 
-    def __init__(self, nodo_1, nodo_2, peso=1, atributos={}):
+    def __init__(self, nodo_1, nodo_2, atributos=None):
         """
         Constructor de la clase Arista.
 
@@ -33,9 +33,11 @@ class Arista:
             Atributos asociados a la arista
         """
         self.nodo_1 = nodo_1
-        self.nodo_2 = nodo_2
-        self.peso = peso
-        self.atributos = atributos
+        self.nodo_2 = nodo_2  
+        if atributos is None:
+            self.atributos =  {}
+        else:
+            self.atributos = atributos.copy()
 
     def __str__(self):
         """

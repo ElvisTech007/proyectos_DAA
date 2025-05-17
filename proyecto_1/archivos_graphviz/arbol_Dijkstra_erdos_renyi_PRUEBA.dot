@@ -1,0 +1,151 @@
+graph arbol_dijkstra_G_1 {
+    1 [label="Distancia:
+0"];
+    23 [label="Distancia:
+17"];
+    44 [label="Distancia:
+18"];
+    32 [label="Distancia:
+23"];
+    46 [label="Distancia:
+28"];
+    15 [label="Distancia:
+32"];
+    18 [label="Distancia:
+33"];
+    41 [label="Distancia:
+34"];
+    27 [label="Distancia:
+34"];
+    5 [label="Distancia:
+37"];
+    28 [label="Distancia:
+38"];
+    38 [label="Distancia:
+40"];
+    14 [label="Distancia:
+44"];
+    37 [label="Distancia:
+47"];
+    26 [label="Distancia:
+48"];
+    24 [label="Distancia:
+50"];
+    35 [label="Distancia:
+52"];
+    31 [label="Distancia:
+54"];
+    50 [label="Distancia:
+55"];
+    33 [label="Distancia:
+55"];
+    13 [label="Distancia:
+58"];
+    12 [label="Distancia:
+59"];
+    21 [label="Distancia:
+61"];
+    45 [label="Distancia:
+62"];
+    20 [label="Distancia:
+62"];
+    3 [label="Distancia:
+63"];
+    8 [label="Distancia:
+64"];
+    29 [label="Distancia:
+64"];
+    30 [label="Distancia:
+65"];
+    11 [label="Distancia:
+67"];
+    47 [label="Distancia:
+68"];
+    6 [label="Distancia:
+70"];
+    48 [label="Distancia:
+70"];
+    7 [label="Distancia:
+71"];
+    17 [label="Distancia:
+71"];
+    40 [label="Distancia:
+71"];
+    10 [label="Distancia:
+71"];
+    22 [label="Distancia:
+72"];
+    43 [label="Distancia:
+72"];
+    2 [label="Distancia:
+72"];
+    36 [label="Distancia:
+73"];
+    49 [label="Distancia:
+73"];
+    34 [label="Distancia:
+74"];
+    9 [label="Distancia:
+75"];
+    25 [label="Distancia:
+75"];
+    39 [label="Distancia:
+76"];
+    16 [label="Distancia:
+82"];
+    42 [label="Distancia:
+83"];
+    19 [label="Distancia:
+95"];
+    4 [label="Distancia:
+98"];
+    2 -- 37 [label="25"];
+    38 -- 3 [label="23"];
+    4 -- 1 [label="98"];
+    46 -- 5 [label="9"];
+    38 -- 6 [label="30"];
+    48 -- 7 [label="1"];
+    1 -- 8 [label="64"];
+    15 -- 9 [label="43"];
+    33 -- 10 [label="16"];
+    24 -- 11 [label="17"];
+    27 -- 12 [label="25"];
+    38 -- 13 [label="18"];
+    27 -- 14 [label="10"];
+    23 -- 15 [label="15"];
+    16 -- 18 [label="49"];
+    17 -- 44 [label="53"];
+    18 -- 23 [label="16"];
+    19 -- 48 [label="25"];
+    20 -- 12 [label="3"];
+    33 -- 21 [label="6"];
+    22 -- 11 [label="5"];
+    23 -- 1 [label="17"];
+    24 -- 15 [label="18"];
+    1 -- 25 [label="75"];
+    5 -- 26 [label="11"];
+    27 -- 32 [label="11"];
+    27 -- 28 [label="4"];
+    13 -- 29 [label="6"];
+    12 -- 30 [label="6"];
+    31 -- 41 [label="20"];
+    32 -- 1 [label="23"];
+    33 -- 44 [label="37"];
+    45 -- 34 [label="12"];
+    32 -- 35 [label="29"];
+    11 -- 36 [label="6"];
+    37 -- 23 [label="30"];
+    44 -- 38 [label="22"];
+    23 -- 39 [label="59"];
+    37 -- 40 [label="24"];
+    41 -- 44 [label="16"];
+    42 -- 41 [label="49"];
+    23 -- 43 [label="55"];
+    44 -- 23 [label="1"];
+    45 -- 21 [label="1"];
+    32 -- 46 [label="5"];
+    8 -- 47 [label="4"];
+    15 -- 48 [label="38"];
+    49 -- 15 [label="41"];
+    50 -- 44 [label="37"];
+}
