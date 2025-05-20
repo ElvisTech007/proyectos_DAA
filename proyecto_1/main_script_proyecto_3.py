@@ -16,13 +16,13 @@ cantidad_nodos = [10, 50]#[50, 500]
 dimensiones_malla = [(4, 4), (8, 8)]
 grafo = Grafo("G_1")
 
-for n,m in dimensiones_malla:
+# for n,m in dimensiones_malla:
 
-    grafo.grafo_malla(n,m, dirigido=False)
-    grafo.inicializar_pesos_aleatorios()
-    arbol_dijsktra = grafo.Dijkstra(1)
-    arbol_dijsktra.guardar_graphviz(nombre_archivo="arbol_Dijkstra_malla_" + str(n*m) + "_nodos.dot")
-# for numero_nodos in cantidad_nodos:
+#     grafo.grafo_malla(n,m, dirigido=False)
+#     grafo.inicializar_pesos_aleatorios()
+#     arbol_dijsktra = grafo.Dijkstra(1)
+#     arbol_dijsktra.guardar_graphviz(nombre_archivo="arbol_Dijkstra_malla_" + str(n*m) + "_nodos.dot", mostrar_pesos=True)
+for numero_nodos in cantidad_nodos:
 
     # # Grafo Erdon Renyi
     # grafo.grafo_erdos_renyi(numero_nodos, numero_nodos*4, dirigido=False)
@@ -34,19 +34,19 @@ for n,m in dimensiones_malla:
     # grafo.grafo_gilbert(numero_nodos,p=0.25, dirigido=False)
     # grafo.inicializar_pesos_aleatorios()
     # arbol_dijsktra = grafo.Dijkstra(1)
-    # arbol_dijsktra.guardar_graphviz(nombre_archivo="arbol_Dijkstra_gilbert_" + str(numero_nodos) + "_nodos.dot")
+    # arbol_dijsktra.guardar_graphviz(nombre_archivo="arbol_Dijkstra_gilbert_" + str(numero_nodos) + "_nodos.dot", mostrar_pesos=True)
 
-    # grafo.grafo_geografico(numero_nodos,r=0.2, dirigido=False)
+    # grafo.grafo_geografico(numero_nodos,r=0.4, dirigido=False)
     # grafo.inicializar_pesos_aleatorios()
     # arbol_dijsktra = grafo.Dijkstra(1)
-    # arbol_dijsktra.guardar_graphviz(nombre_archivo="arbol_Dijkstra_geografico_" + str(numero_nodos) + "_nodos.dot")
+    # arbol_dijsktra.guardar_graphviz(nombre_archivo="arbol_Dijkstra_geografico_" + str(numero_nodos) + "_nodos.dot", mostrar_pesos=True)
 
     # grafo.grafo_barabasi_albert(numero_nodos,d=4, dirigido=False)
     # grafo.inicializar_pesos_aleatorios()
     # arbol_dijsktra = grafo.Dijkstra(1)
-    # arbol_dijsktra.guardar_graphviz(nombre_archivo="arbol_Dijkstra_barabasi_" + str(numero_nodos) + "_nodos.dot")
+    # arbol_dijsktra.guardar_graphviz(nombre_archivo="arbol_Dijkstra_barabasi_" + str(numero_nodos) + "_nodos.dot", mostrar_pesos=True)
 
-    # grafo.grafo_dorogovtsev_mendes(numero_nodos, dirigido=False)
-    # grafo.inicializar_pesos_aleatorios()
-    # arbol_dijsktra = grafo.Dijkstra(1)
-    # arbol_dijsktra.guardar_graphviz(nombre_archivo="arbol_Dijkstra_dogorostov_" + str(numero_nodos) + "_nodos.dot")
+    grafo.grafo_dorogovtsev_mendes(numero_nodos, dirigido=False)
+    grafo.inicializar_pesos_aleatorios()
+    arbol_dijsktra = grafo.Dijkstra(1)
+    arbol_dijsktra.guardar_graphviz(nombre_archivo="arbol_Dijkstra_dogorostov_" + str(numero_nodos) + "_nodos.dot", mostrar_pesos=True)

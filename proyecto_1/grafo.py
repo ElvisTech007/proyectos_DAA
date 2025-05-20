@@ -808,7 +808,7 @@ class Grafo:
             
             # Aquí agregamos al nodo por que ya lo estamos visitando:
             arbol_dijkstra.aniadir_nodo(u)
-
+            if "vecinos" not in u.atributos: continue
             for nodo_vecino in u.atributos["vecinos"]:
                 arista = self.obtener_arista(u, nodo_vecino)
                 # Obtener peso:
