@@ -98,6 +98,14 @@ class Grafo:
         """
         return random.choices([True, False], [p, 1-p])[0]
 
+    def _iniciar_grafo_sin_aristas(self):
+        grafo_sin_aristas = Grafo()
+        # Simplemente añadimos cada nodo que tenga
+        # al otro grafo y lo devolvemos
+        for nodo in self.conjunto_nodos.keys():
+            grafo_sin_aristas.aniadir_nodo(Nodo(nodo, atributos={"vecinos":[]}))
+        return grafo_sin_aristas
+
     def inicializar_pesos_aleatorios(self, rango_inferior=1, rango_superior=100):
         # Añadimos los pesos en las aristas:
         for arista in self.conjunto_aristas.values():
@@ -737,7 +745,6 @@ class Grafo:
                 self.DFS_R(nodo_vecino.etiqueta, s, arbol_DFS)
         return arbol_DFS
 
-    #TODO Construir arbol aquí
     def DFS_I(self, s):
         # Primero vamos a inicializar el árbol:
         arbol_DFS = Grafo("arbol_DFS_I_" + self.nombre_grafo)
@@ -832,3 +839,66 @@ class Grafo:
             arbol_dijkstra.aniadir_arista(arista)
         
         return arbol_dijkstra
+
+    # Proyecto 4 - Algoritmos Kruskal y Prim
+    # Fecha límite: 3 jun
+    # Utilizando la biblioteca de grafos desarrollada en el proyecto 1,
+    # implementar los algoritmos de Kruskal (directo e inverso) y 
+    # Prim de tal forma que calculen el árbol de expansión mínima; es decir,
+    # desarrollar los métodos en la clase Grafo:
+
+    def KruskalD(self):
+        # Incializamos el conjunto de aristas:
+        aristas_MST = set()
+        num_aristas_en_MST = 0
+        # Primero obtenemos una lista de aristas por su costo
+        # Esto lo hare con una heapdict
+        pila_aristas = heapdict()
+        for arista in self.conjunto_aristas:
+            # Las ordenamos automaticamente por peso
+            # Esto cuesta O(log(k)) que siendo n
+            # es O(n log(n))
+            pila_aristas[arista] = arista.atributos["peso"]
+
+        # Ya que tenemos la lista de aristas por peso
+        # Emepzamos a recorrer los nodos
+        for arista in pila_aristas:
+            if num_aristas_en_MST == len(self.conjunto_nodos.keys()) - 1:
+                break
+            # Creamos un grafo temporal
+            grafo_temporal = self._iniciar_grafo_sin_aristas()
+            for arista in aristas_MST:
+                grafo_temporal.aniadir_arista(arista)
+            # Ahora simplemente tratamos de ver si podemos llegar desde
+            #u hasta v, donde son nodos que conformas a arista = (u,v)
+            u = arista.nodo_1
+            v = arista.nodo_2
+            # Realizamos BFS con la etiqueta del nodo
+            arbol_BFS, _ = grafo_temporal.BFS(u.etiqueta)
+            # Ahora revisamos si v se puede alcanzar desde u
+            # es decir, v debe ser parte del conjunto de nodos
+            # del arbol BFS
+
+            # si es alcanzable entonces creariamos un ciclo
+            # por lo no la agregamos 
+            if v in arbol_BFS.conjunto_nodos.values():
+                continue
+            else:
+                aristas_MST.add(arista)
+        # Finalmente creamos el MST:
+        minimum_spanning_tree = self._iniciar_grafo_sin_aristas()
+        for arista in aristas_MST:
+            minimum_spanning_tree.aniadir_arista(arista)
+        
+        return minimum_spanning_tree
+    #     def KruskalI(self):
+    #     def Prim(self):
+
+
+    # Entregables en el repositorio
+
+    #     Código fuente
+    #     Archivos de grafos generados. Dos por cada generador (uno con "pocos" y otro con "muchos" nodos).
+    #     Archivos de grafos calculados.
+    #     Imágenes de la visualización de cada grafo (generados y calculados)
+    #     Capturas de pantalla donde se muestre el valor del MST
