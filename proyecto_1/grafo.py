@@ -102,11 +102,14 @@ class Grafo:
         grafo_sin_aristas = Grafo()
         # Simplemente añadimos cada nodo que tenga
         # al otro grafo y lo devolvemos
-        for nodo in self.conjunto_nodos.keys():
-            grafo_sin_aristas.aniadir_nodo(Nodo(nodo, atributos={"vecinos":[]}))
+        for nodo in self.conjunto_nodos.values():
+            grafo_sin_aristas.aniadir_nodo(nodo)
         return grafo_sin_aristas
 
     def inicializar_pesos_aleatorios(self, rango_inferior=1, rango_superior=100):
+        # También las distnacias de los nodos:
+        for nodo in self.conjunto_nodos.values():
+            nodo.atributos["distancia"] = None
         # Añadimos los pesos en las aristas:
         for arista in self.conjunto_aristas.values():
             arista.atributos["peso"] = random.randint(rango_inferior,rango_superior)
@@ -162,8 +165,12 @@ class Grafo:
                 nodo_2.atributos["vecinos"] = []
             # Y cuando ya es seguro que lo tengan agregamos 
             # los vecinos los unos al los otros
-            nodo_1.atributos["vecinos"].append(nodo_2)
-            nodo_2.atributos["vecinos"].append(nodo_1)
+
+            # COndición para que no se agreguen dobles los vecinos
+            if nodo_2 not in nodo_1.atributos["vecinos"]:
+                nodo_1.atributos["vecinos"].append(nodo_2)
+            if nodo_1 not in nodo_2.atributos["vecinos"]:
+                nodo_2.atributos["vecinos"].append(nodo_1)
         else:
             raise ValueError("Uno o ambos nodos no tienen atributo de vecinos")
         self.conjunto_aristas[(nodo_1, nodo_2)] = arista
@@ -655,6 +662,8 @@ class Grafo:
                     peso = self.conjunto_nodos[nodo].atributos["distancia"]
                     if peso == 0:
                         archivo_dot.write(f"    \"{nodo}\" [label=\"Raiz {nodo}\"];\n")
+                    elif peso is None:
+                        archivo_dot.write(f"    {nodo};\n")
                     else:
                         archivo_dot.write(f"    \"{nodo}\" [label=\"Nodo {nodo} ({peso})\"];\n")
 
@@ -854,7 +863,7 @@ class Grafo:
         # Primero obtenemos una lista de aristas por su costo
         # Esto lo hare con una heapdict
         pila_aristas = heapdict()
-        for arista in self.conjunto_aristas:
+        for arista in self.conjunto_aristas.values():
             # Las ordenamos automaticamente por peso
             # Esto cuesta O(log(k)) que siendo n
             # es O(n log(n))
@@ -862,18 +871,25 @@ class Grafo:
 
         # Ya que tenemos la lista de aristas por peso
         # Emepzamos a recorrer los nodos
-        for arista in pila_aristas:
+        while pila_aristas:
+            arista,_ = pila_aristas.popitem()
             if num_aristas_en_MST == len(self.conjunto_nodos.keys()) - 1:
                 break
             # Creamos un grafo temporal
             grafo_temporal = self._iniciar_grafo_sin_aristas()
-            for arista in aristas_MST:
-                grafo_temporal.aniadir_arista(arista)
+            for arista_MST in aristas_MST:
+                grafo_temporal.aniadir_arista(arista_MST)
             # Ahora simplemente tratamos de ver si podemos llegar desde
             #u hasta v, donde son nodos que conformas a arista = (u,v)
             u = arista.nodo_1
             v = arista.nodo_2
             # Realizamos BFS con la etiqueta del nodo
+            # Por mi mala implementación debo resetear los nodos
+            # bruhhhh debi hacer mi BFS copiando el grafo
+            # for nodo in grafo_temporal.conjunto_nodos.values():
+            #     if "visitado" in nodo.atributos:
+            #         del nodo.atributos["visitado"]
+
             arbol_BFS, _ = grafo_temporal.BFS(u.etiqueta)
             # Ahora revisamos si v se puede alcanzar desde u
             # es decir, v debe ser parte del conjunto de nodos
@@ -885,9 +901,16 @@ class Grafo:
                 continue
             else:
                 aristas_MST.add(arista)
+                num_aristas_en_MST += 1
         # Finalmente creamos el MST:
-        minimum_spanning_tree = self._iniciar_grafo_sin_aristas()
+        minimum_spanning_tree = Grafo(self.nombre_grafo + "_MST")
         for arista in aristas_MST:
+            if arista.nodo_1 not in minimum_spanning_tree.conjunto_nodos.values():
+                arista.nodo_1.atributos["distancia"] = None
+                minimum_spanning_tree.aniadir_nodo(arista.nodo_1)
+            if arista.nodo_2 not in minimum_spanning_tree.conjunto_nodos.values():
+                arista.nodo_2.atributos["distancia"] = None
+                minimum_spanning_tree.aniadir_nodo(arista.nodo_2)
             minimum_spanning_tree.aniadir_arista(arista)
         
         return minimum_spanning_tree
