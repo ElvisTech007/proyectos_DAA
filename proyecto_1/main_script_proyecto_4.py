@@ -16,7 +16,7 @@ grafo = Grafo("G_1")
 for numero_nodos in cantidad_nodos:
 
     # Grafo Erdon Renyi
-    grafo.grafo_erdos_renyi(50, 500, dirigido=False)
+    grafo.grafo_erdos_renyi(5, 10, dirigido=False)
     # Inicializamos el grafo:
     grafo.inicializar_pesos_aleatorios()
     grafo.guardar_graphviz("AAPRUEBAMST.dot", mostrar_pesos=True)

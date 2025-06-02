@@ -85,6 +85,23 @@ class Grafo:
         # Modificación para iterar sobre las listas de aristas
         aristas_str = ", ".join(str(arista) for arista_list in self.conjunto_aristas.values() for arista in arista_list)
         return f"Grafo(Nodos=[{nodos_str}], Aristas=[{aristas_str}])"
+
+    def __deepcopy__(self, memo):
+        # Si el objeto actual ya ha sido copiado en esta operación deepcopy,
+        # devolver la copia existente para evitar bucles infinitos.
+        if id(self) in memo:
+            return memo[id(self)]
+
+        nuevo_grafo = Grafo(nombre_grafo=self.nombre_grafo, dirigido=self.dirigido)
+        
+        memo[id(self)] = nuevo_grafo
+
+        nuevo_grafo.conjunto_nodos = copy.deepcopy(self.conjunto_nodos, memo)
+        nuevo_grafo.conjunto_aristas = copy.deepcopy(self.conjunto_aristas, memo)
+
+
+        return nuevo_grafo
+
     # Metodo PRIVADOS  para manejar cositas:
     def _echar_volado(self, p=0.5):
         """
@@ -97,14 +114,22 @@ class Grafo:
             True o False.
         """
         return random.choices([True, False], [p, 1-p])[0]
+    def _iniciar_grafo_con_aristas(self, set_aristas):
+        # Dado un conjunto de aristas 
+        # Estoy construyendo un árbol desde 0
+        # para no estar copiando referencias
+        subgrafo = Grafo()
+        num_nodos = len(self.conjunto_nodos.keys())
+        for i in range(1,num_nodos+1):
+            subgrafo.aniadir_nodo(Nodo(i, atributos={"vecinos":[]}))
 
-    def _iniciar_grafo_sin_aristas(self):
-        grafo_sin_aristas = Grafo()
-        # Simplemente añadimos cada nodo que tenga
-        # al otro grafo y lo devolvemos
-        for nodo in self.conjunto_nodos.values():
-            grafo_sin_aristas.aniadir_nodo(nodo)
-        return grafo_sin_aristas
+        for arista in set_aristas:
+            nodo_1 = subgrafo.obtener_nodo(arista.nodo_1.etiqueta)
+            nodo_2 = subgrafo.obtener_nodo(arista.nodo_2.etiqueta)
+            subgrafo.aniadir_arista(Arista(nodo_1, nodo_2))
+        return subgrafo
+
+
 
     def inicializar_pesos_aleatorios(self, rango_inferior=1, rango_superior=100):
         # También las distnacias de los nodos:
@@ -868,7 +893,6 @@ class Grafo:
             # Esto cuesta O(log(k)) que siendo n
             # es O(n log(n))
             pila_aristas[arista] = arista.atributos["peso"]
-
         # Ya que tenemos la lista de aristas por peso
         # Emepzamos a recorrer los nodos
         while pila_aristas:
@@ -876,20 +900,16 @@ class Grafo:
             if num_aristas_en_MST == len(self.conjunto_nodos.keys()) - 1:
                 break
             # Creamos un grafo temporal
-            grafo_temporal = self._iniciar_grafo_sin_aristas()
-            for arista_MST in aristas_MST:
-                grafo_temporal.aniadir_arista(arista_MST)
+            grafo_temporal = self._iniciar_grafo_con_aristas(aristas_MST)
+            # for arista_MST in aristas_MST:
+            #     grafo_temporal.aniadir_arista(arista_MST)
             # Ahora simplemente tratamos de ver si podemos llegar desde
             #u hasta v, donde son nodos que conformas a arista = (u,v)
             u = arista.nodo_1
             v = arista.nodo_2
-            # Realizamos BFS con la etiqueta del nodo
-            # Por mi mala implementación debo resetear los nodos
-            # bruhhhh debi hacer mi BFS copiando el grafo
-            # for nodo in grafo_temporal.conjunto_nodos.values():
-            #     if "visitado" in nodo.atributos:
-            #         del nodo.atributos["visitado"]
 
+            # Como mi grafo temporal es solo una referencia
+            # a cosas de mi grafo original, entonces lo que hago es
             arbol_BFS, _ = grafo_temporal.BFS(u.etiqueta)
             # Ahora revisamos si v se puede alcanzar desde u
             # es decir, v debe ser parte del conjunto de nodos
