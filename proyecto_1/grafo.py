@@ -901,10 +901,6 @@ class Grafo:
                 break
             # Creamos un grafo temporal
             grafo_temporal = self._iniciar_grafo_con_aristas(aristas_MST)
-            # for arista_MST in aristas_MST:
-            #     grafo_temporal.aniadir_arista(arista_MST)
-            # Ahora simplemente tratamos de ver si podemos llegar desde
-            #u hasta v, donde son nodos que conformas a arista = (u,v)
             u = arista.nodo_1
             v = arista.nodo_2
 
@@ -934,7 +930,60 @@ class Grafo:
             minimum_spanning_tree.aniadir_arista(arista)
         
         return minimum_spanning_tree
-    #     def KruskalI(self):
+
+    
+    def KruskalI(self):
+        # variable para ver si se desconecta o no
+        num_nodos = len(self.conjunto_nodos.values())
+        # Incializamos el conjunto de aristas:
+        aristas_MST = set()
+        # Primero obtenemos una lista de aristas por su costo
+        # Esto lo hare con una heapdict
+        pila_aristas = heapdict()
+        for arista in self.conjunto_aristas.values():
+            # guardamos en el orden inverso
+            pila_aristas[arista] = -arista.atributos["peso"]
+            # Guardamos todas las aristas
+            aristas_MST.add(arista)
+        # Ya que tenemos la lista de aristas por peso
+        # Emepzamos a recorrer los aristas en orden inverso
+        # Practicamente agregamos todas:
+        while pila_aristas:
+            arista,_ = pila_aristas.popitem()
+            if len(aristas_MST) == len(self.conjunto_nodos.keys()) - 1:
+                break
+            # Quitamos la arista:
+            aristas_MST.discard(arista)
+            # Creamos un grafo temporal menos la arista
+            grafo_temporal = self._iniciar_grafo_con_aristas(aristas_MST)
+
+            u = arista.nodo_1
+            # Como mi grafo temporal es solo una referencia
+            # a cosas de mi grafo original, entonces lo que hago es
+            arbol_BFS, _ = grafo_temporal.BFS(u.etiqueta)
+
+            # si desde u se pueden llegar a todos los nodos
+            # quiere decir que mi grafo sigue conectado
+            if len(arbol_BFS.conjunto_nodos.values()) == num_nodos:
+                continue
+            else:
+                # Si al quitarla se desconecta simplemente la ponemos en su lugar XD
+                aristas_MST.add(arista)
+                # Finalmente creamos el MST:
+        minimum_spanning_tree = Grafo(self.nombre_grafo + "_MST")
+        for arista in aristas_MST:
+            if arista.nodo_1 not in minimum_spanning_tree.conjunto_nodos.values():
+                arista.nodo_1.atributos["distancia"] = None
+                minimum_spanning_tree.aniadir_nodo(arista.nodo_1)
+            if arista.nodo_2 not in minimum_spanning_tree.conjunto_nodos.values():
+                arista.nodo_2.atributos["distancia"] = None
+                minimum_spanning_tree.aniadir_nodo(arista.nodo_2)
+            minimum_spanning_tree.aniadir_arista(arista)
+        return minimum_spanning_tree
+        # Listo ya podemos armar el arbol
+
+        # El algoritmo de kruskal inverso:
+        
     #     def Prim(self):
 
 

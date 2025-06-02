@@ -16,12 +16,12 @@ grafo = Grafo("G_1")
 for numero_nodos in cantidad_nodos:
 
     # Grafo Erdon Renyi
-    grafo.grafo_erdos_renyi(5, 10, dirigido=False)
+    grafo.grafo_erdos_renyi(10, 45, dirigido=False)
     # Inicializamos el grafo:
     grafo.inicializar_pesos_aleatorios()
     grafo.guardar_graphviz("AAPRUEBAMST.dot", mostrar_pesos=True)
     # Ya que hicimos eso solo deberíamos aplciar Kruskal o algo así:
-    MST_grafo = grafo.KruskalD()
+    MST_grafo = grafo.KruskalI()
     MST_grafo.guardar_graphviz("AAMST.dot", mostrar_pesos=True)
     #print(MST_grafo)
     # grafo.guardar_graphviz(nombre_archivo="grafo_erdos_renyi_" + str(numero_nodos) + "_nodos.dot")
