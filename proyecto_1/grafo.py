@@ -980,12 +980,39 @@ class Grafo:
                 minimum_spanning_tree.aniadir_nodo(arista.nodo_2)
             minimum_spanning_tree.aniadir_arista(arista)
         return minimum_spanning_tree
-        # Listo ya podemos armar el arbol
-
-        # El algoritmo de kruskal inverso:
         
-    #     def Prim(self):
+    def Prim(self):
+        # Asigmanos un conjunto S y una cola de prioridad
+        nodos_MST = set()
+        aristas_MST = set()
+        cola_prioridad = heapdict()
+        # Primero debemos inicializar
+        # Todos los vertices con distancia infinita
+        for nodo in self.conjunto_nodos.values():
+            # Ponemos la distancia como infinita 
+            nodo.atributos["distancia"] = inf
+            cola_prioridad[nodo] = nodo.atributos["distancia"]
 
+        # Ahora vamos sacando las cosas de la cola de prioridad:
+        while cola_prioridad:
+            # Sacamos el item
+            if len(nodos_MST) == len(self.conjunto_nodos.values()):
+                break
+            u,_ = cola_prioridad.popitem()
+            # Lo insertamos en S
+            nodos_MST.add(u)
+            # Ahora para cada arista que sale de u:
+            for nodo_vecino in u.atributos["vecinos"]:
+                # Obtenemos la arista:
+                arista = self.obtener_arista(u, nodo_vecino)
+                if (nodo_vecino not in nodos_MST) and (arista.atributos["peso"] < nodo_vecino.atributos["distancia"]):
+                    # Establecemos la distancia del nodo como el peso de la arista
+                    nodo_vecino.atributos["distancia"] = arista.atributos["peso"] 
+                    # Agregamos la arista
+                    aristas_MST.add(arista)
+        # Insertamos todos los nodos en la cola de prioridad
+        #TODO
+        # Construir el arbol y ya acabe
 
     # Entregables en el repositorio
 
