@@ -984,35 +984,53 @@ class Grafo:
     def Prim(self):
         # Asigmanos un conjunto S y una cola de prioridad
         nodos_MST = set()
+        # Creamos el conjunto de aristas de nuestro arbol
         aristas_MST = set()
+        # Creamos el diccionario de aristas potenciales:
+        arista_temporal = {}
         cola_prioridad = heapdict()
         # Primero debemos inicializar
         # Todos los vertices con distancia infinita
         for nodo in self.conjunto_nodos.values():
-            # Ponemos la distancia como infinita 
-            nodo.atributos["distancia"] = inf
+            # Ponemos la distancia como infinita
+            if nodo.etiqueta == 1:
+                nodo.atributos["distancia"] = 0
+            else:
+                nodo.atributos["distancia"] = inf
             cola_prioridad[nodo] = nodo.atributos["distancia"]
 
         # Ahora vamos sacando las cosas de la cola de prioridad:
         while cola_prioridad:
-            # Sacamos el item
-            if len(nodos_MST) == len(self.conjunto_nodos.values()):
-                break
             u,_ = cola_prioridad.popitem()
+            if u in nodos_MST: continue
             # Lo insertamos en S
             nodos_MST.add(u)
+            # Agregamos la arista al MST:
+            if u in arista_temporal:
+                aristas_MST.add(arista_temporal[u])
             # Ahora para cada arista que sale de u:
             for nodo_vecino in u.atributos["vecinos"]:
                 # Obtenemos la arista:
                 arista = self.obtener_arista(u, nodo_vecino)
                 if (nodo_vecino not in nodos_MST) and (arista.atributos["peso"] < nodo_vecino.atributos["distancia"]):
                     # Establecemos la distancia del nodo como el peso de la arista
-                    nodo_vecino.atributos["distancia"] = arista.atributos["peso"] 
-                    # Agregamos la arista
-                    aristas_MST.add(arista)
-        # Insertamos todos los nodos en la cola de prioridad
-        #TODO
-        # Construir el arbol y ya acabe
+                    nodo_vecino.atributos["distancia"] = arista.atributos["peso"]
+                    # Actualizamos la cola de prioridades
+                    cola_prioridad[nodo_vecino] = nodo_vecino.atributos["distancia"]
+                    # Actualizamos el diccionario de posibles aristas chipocludas:
+                    arista_temporal[nodo_vecino] = arista
+        # Finalmente creamos el MST:
+        minimum_spanning_tree = Grafo(self.nombre_grafo + "_MST")
+        for arista in aristas_MST:
+            if arista.nodo_1 not in minimum_spanning_tree.conjunto_nodos.values():
+                arista.nodo_1.atributos["distancia"] = None
+                minimum_spanning_tree.aniadir_nodo(arista.nodo_1)
+            if arista.nodo_2 not in minimum_spanning_tree.conjunto_nodos.values():
+                arista.nodo_2.atributos["distancia"] = None
+                minimum_spanning_tree.aniadir_nodo(arista.nodo_2)
+            minimum_spanning_tree.aniadir_arista(arista)
+        # y así creamos el MST
+        return minimum_spanning_tree
 
     # Entregables en el repositorio
 
