@@ -64,5 +64,42 @@ try:
     # formato que tiene WAV que es int16
     audio_reconstruido = audio_reconstruido.astype(OG_DATATYPE)
     wavfile.write("./AUDIO_RECONSTRUIDO.wav", rate, audio_reconstruido)
+
+    # Ahora vamos a generar la grafica:
+    # vamos a hacer la comparativa de antes, transofrmado y despues
+    fig, axes = plt.subplots(3,1,figsize=(12, 10))
+    # Para la grafica de la señal original
+    tiempo = np.arange(len(audio_data))/rate
+    axes[0].set_title("Audio original")
+    axes[0].set_xlabel("Tiempo (s)")
+    axes[0].set_xlabel("Amplitud (s)")
+    axes[0].grid(True) 
+    sns.lineplot(x=tiempo, y =audio_data*MAX_INT, ax=axes[0])
+
+    # Para la grafica de las frecuencias
+    # Aquí hay que hacer algunas cositas
+    # primero debemos calcular que frecuencias tiene nuestra señal
+    frecuencias = np.fft.fftfreq(len(audio_fft), 1/rate)
+    # Misma señal original
+    frecuencias_positivas = frecuencias[:len(audio_fft)//2]
+    # Arreglo de las magnitudes, al sacarle valor asboluto 
+    # a un complejo sacas su modulo:
+    magnitudes = np.abs(np.array(audio_fft[:len(audio_fft)//2]))
+
+    sns.lineplot(x=frecuencias_positivas, y=magnitudes, ax=axes[1])
+
+    axes[1].set_title('Espectro de POTENCIA de la FFT') # Cambia el título
+    axes[1].set_xlabel('Frecuencia (Hz)')
+    axes[1].set_ylabel('Potencia') # O 'Magnitud Cuadrada'
+    axes[1].set_xlim(0, rate / 2)
+    axes[1].grid(True)
+
+    sns.lineplot(x=tiempo, y=audio_reconstruido, ax=axes[2])
+    axes[2].set_title("Audio original")
+    axes[2].set_xlabel("Tiempo (s)")
+    axes[2].set_xlabel("Amplitud (s)")
+    axes[2].grid(True)
+    plt.subplots_adjust(hspace=0.5)
+    plt.show()
 except FileNotFoundError:
     print(f"No existe el archivo xd")
