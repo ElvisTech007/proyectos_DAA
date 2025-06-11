@@ -3,8 +3,9 @@ def fft(a):
     # a es el arreglo que contiene
     # los datos de la señal del sonido
     
-    # Condiciṕn de paro
-    if len(a): return a
+    n = len(a)
+    if n == 1: 
+        return a
 
     # Ahora tenemos que dividir en potencias pares
     # e impares haciendo un slicing
@@ -17,7 +18,7 @@ def fft(a):
     # Inicializamos nuestro arreglo de frecuencias
     Y = [0]*n
     for k in range(n//2):
-        omega_k = cmath.exp(-2j * cmath.pi * k / n)
+        omega_k = cmath.exp(2j * cmath.pi * k / n)
         Y[k] = e[k] + omega_k * d[k]
         Y[k + n // 2] = e[k] - omega_k * d[k]
     
@@ -34,9 +35,9 @@ def ifft(a):
 
     Y = [0] * n
     for k in range(n // 2):
-        # Aquí cambia el signo por la matriz inversa de fourier
+        # Aquía cambia el signo
         omega_k = cmath.exp(-2j * cmath.pi * k / n)
-        Y[k] = (e[k] + omega_k * d[k]) / n
-        Y[k + n // 2] = (e[k] - omega_k * d[k]) / n
+        Y[k] = (e[k] + omega_k * d[k])
+        Y[k + n // 2] = (e[k] - omega_k * d[k])
         
     return Y

@@ -55,7 +55,7 @@ try:
     # AHORA como sabemos que justamente quedan residuos de 
     # numeros complejos solamente tomamos la parte REAL
     # que es la que da el audio:
-    audio_reconstruido = np.array(ifft_result).real
+    audio_reconstruido = (np.array(ifft_result)/len(audio_data)).real
     # Ahora debemos regresar a las aplitudes originales
     # COmo antes dividimos ahora multiplicamos para recuperer
     # el volumen por así decirlo
