@@ -64,7 +64,7 @@ try:
     # AHora debo guardar el tipo de dato correcto en el
     # formato que tiene WAV que es int16
     audio_reconstruido = audio_reconstruido.astype(OG_DATATYPE)
-    wavfile.write("./AUDIO_RECONSTRUIDO.wav", rate, audio_reconstruido)
+    wavfile.write("./ARCHIVO_RECONSTRUIDO.wav", rate, audio_reconstruido)
 
     # Ahora vamos a generar la grafica:
     # vamos a hacer la comparativa de antes, transofrmado y despues
@@ -116,7 +116,7 @@ try:
     audio_filtrado_reconstruido = (np.array(audio_filtrado)/len(audio_data)).real
     audio_filtrado_reconstruido *= MAX_INT
     audio_filtrado_reconstruido = audio_filtrado_reconstruido.astype(OG_DATATYPE)
-    wavfile.write("./AUDIO_FILTRDO_RECONSTRUIDO.wav", rate, audio_filtrado_reconstruido)
+    wavfile.write("./ARCHIVO_FILTRADO_RECONSTRUIDO.wav", rate, audio_filtrado_reconstruido)
 
         # Ahora vamos a generar la grafica:
     # vamos a hacer la comparativa de antes, transofrmado y despues
