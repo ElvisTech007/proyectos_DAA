@@ -87,6 +87,21 @@ class Grafo:
         return f"Grafo(Nodos=[{nodos_str}], Aristas=[{aristas_str}])"
 
     def __deepcopy__(self, memo):
+        """
+        Crea una copia profunda del grafo.
+
+        Copia recursivamente nodos y aristas, gestionando referencias para evitar bucles.
+
+        Parameters
+        ----------
+        memo : dict
+            Diccionario de objetos ya copiados en la operación actual para evitar recursión infinita.
+
+        Returns
+        -------
+        nuevo_grafo : Grafo
+            Una nueva instancia de Grafo que es una copia profunda del original.
+        """
         # Si el objeto actual ya ha sido copiado en esta operación deepcopy,
         # devolver la copia existente para evitar bucles infinitos.
         if id(self) in memo:
@@ -115,6 +130,27 @@ class Grafo:
         """
         return random.choices([True, False], [p, 1-p])[0]
     def _iniciar_grafo_con_aristas(self, set_aristas):
+        """
+        Inicializa un nuevo grafo con un conjunto específico de aristas.
+
+        Construye un nuevo grafo que incluye todos los nodos del grafo original
+        y las aristas proporcionadas, creando nuevas instancias de nodos y aristas.
+
+        Parameters
+        ----------
+        set_aristas : set
+            Un conjunto de objetos Arista a añadir al nuevo grafo.
+
+        Returns
+        -------
+        subgrafo : Grafo
+            Un nuevo objeto Grafo que contiene los nodos del grafo original
+            y las aristas especificadas, sin copiar referencias directas.
+
+        Notes
+        -----
+        Este es un método auxiliar privado.
+        """
         # Dado un conjunto de aristas 
         # Estoy construyendo un árbol desde 0
         # para no estar copiando referencias
@@ -132,6 +168,24 @@ class Grafo:
 
 
     def inicializar_pesos_aleatorios(self, rango_inferior=1, rango_superior=100):
+        """
+        Inicializa los pesos de las aristas y las distancias de los nodos con valores aleatorios.
+
+        Asigna un peso aleatorio a cada arista dentro del rango especificado
+        y establece la distancia de todos los nodos a None.
+
+        Parameters
+        ----------
+        rango_inferior : int, optional
+            El valor mínimo posible para el peso de una arista. Por defecto es 1.
+        rango_superior : int, optional
+            El valor máximo posible para el peso de una arista. Por defecto es 100.
+
+        Returns
+        -------
+        None
+            Esta función no retorna ningún valor; modifica el grafo inplace.
+        """
         # También las distnacias de los nodos:
         for nodo in self.conjunto_nodos.values():
             nodo.atributos["distancia"] = None
@@ -227,6 +281,28 @@ class Grafo:
             raise ValueError(f"El nodo {etiqueta} no existe")
 
     def obtener_arista(self, nodo_1, nodo_2):
+        """
+        Obtiene la arista que conecta dos nodos específicos en el grafo.
+
+        Verifica ambas direcciones si el grafo no es dirigido.
+
+        Parameters
+        ----------
+        nodo_1 : object
+            El primer objeto nodo en la arista.
+        nodo_2 : object
+            El segundo objeto nodo en la arista.
+
+        Returns
+        -------
+        arista : Arista
+            El objeto arista que conecta 'nodo_1' y 'nodo_2'.
+
+        Raises
+        ------
+        ValueError
+            Si la arista entre los dos nodos no existe en el grafo.
+        """
         # Primero verificamos la dirección original de la arista
         if (nodo_1,nodo_2) in self.conjunto_aristas.keys():
             return self.conjunto_aristas[(nodo_1,nodo_2)]
@@ -663,7 +739,7 @@ class Grafo:
         None
             Este método guarda el grafo en un archivo y no devuelve ningún valor.
 
-        Notas
+        Notes
         -----
         El grafo se guarda en formato Graphviz, que puede ser visualizado con herramientas como Graphviz.
         """
@@ -709,6 +785,25 @@ class Grafo:
     # es decir, desarrollar los métodos en la clase Grafo:
 
     def BFS(self, s):
+        """
+        Realiza una Búsqueda en Amplitud (BFS) desde un nodo inicial.
+
+        Construye un árbol BFS y organiza los nodos por capas/profundidad.
+        Los nodos visitados se marcan con el atributo "visitado".
+
+        Parameters
+        ----------
+        s : int
+            La etiqeutaa del nodo de inicio para el BFS.
+
+        Returns
+        -------
+        arbol_BFS : Grafo
+            Un nuevo objeto Grafo que representa el árbol de la BFS.
+        lista_capas : dict
+            Un diccionario donde las claves son los números de capa (profundidad)
+            y los valores son listas de nodos en esa capa.
+        """
         # Obtenemos bien el nodo
         s = self.obtener_nodo(s)
         s.atributos["visitado"] = True
@@ -740,6 +835,26 @@ class Grafo:
         return arbol_BFS, lista_capas
 
     def DFS_R(self, s, nodo_padre = None, arbol_DFS = None):
+        """
+        Realiza una Búsqueda en Profundidad (DFS) de forma recursiva.
+
+        Construye un árbol DFS explorando el grafo recursivamente desde un nodo de inicio.
+
+        Parameters
+        ----------
+        s : int
+            La etiqueta del nodo actual que se está visitando en la recursión.
+        nodo_padre : object, optional
+            El objeto del nodo padre en el árbol DFS. Es None en la llamada inicial.
+        arbol_DFS : Grafo, optional
+            El objeto Grafo que representa el árbol DFS en construcción.
+            Se inicializa internamente en la primera llamada recursiva.
+
+        Returns
+        -------
+        arbol_DFS : Grafo
+            Un nuevo objeto Grafo que representa el árbol de la DFS construida.
+        """
         # Si no hemos incializado el arbol es
         # La primera iteración
         if arbol_DFS == None:
@@ -780,6 +895,21 @@ class Grafo:
         return arbol_DFS
 
     def DFS_I(self, s):
+        """
+        Realiza una Búsqueda en Profundidad (DFS) de forma iterativa.
+
+        Construye un árbol DFS utilizando una pila para explorar el grafo.
+
+        Parameters
+        ----------
+        s : int
+            La etiqueta del nodo de inicio para DFS. Se usa para obtener el objeto nodo.
+
+        Returns
+        -------
+        arbol_DFS : Grafo
+            Un nuevo objeto Grafo que representa el árbol del DFS.
+        """
         # Primero vamos a inicializar el árbol:
         arbol_DFS = Grafo("arbol_DFS_I_" + self.nombre_grafo)
         # Obtenemos el nodo raíz
@@ -825,7 +955,27 @@ class Grafo:
     # Archivos de grafos calculados. Se debe poder visualizar la distancia que se calculó al nodo origen. Si el nodo original se llama "nodo_2", en el nodo resultante debe llamarse "nodo_2 (22.45)" (dónde 22.45 es la distancia del "nodo_2" al nodo de origen.
     # Imágenes de la visualización de cada grafo (generados y calculados)
     def Dijkstra(self, s):
-        #TODO hacer el arbol
+        """
+        Calcula las rutas más cortas desde un nodo de origen usando el algoritmo de Dijkstra.
+
+        Construye un árbol de caminos más cortos y determina la distancia mínima
+        a cada nodo alcanzable desde el origen.
+
+        Parameters
+        ----------
+        s : int
+            La etiqueta del nodo donde va a iniciar el algoritmo.
+
+        Returns
+        -------
+        arbol_dijkstra : Grafo
+            Un nuevo objeto Grafo que representa el árbol de caminos más cortos.
+
+        Notes
+        -----
+        Este algoritmo asume que los pesos de las aristas son no negativos.
+
+        """
         # Primero vamos a inicializar el árbol:
         arbol_dijkstra = Grafo("arbol_dijkstra_" + self.nombre_grafo)
         # inicializamos los predecesores de los nodos
@@ -882,6 +1032,21 @@ class Grafo:
     # desarrollar los métodos en la clase Grafo:
 
     def KruskalD(self):
+        """
+        Calcula un Árbol de Expansión Mínima (MST) usando un algoritmo tipo Kruskal.
+
+        Ordena las aristas por peso y las añade al MST si no forman un ciclo.
+        La detección de ciclos se realiza mediante una Búsqueda en Amplitud (BFS).
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        minimum_spanning_tree : Grafo
+            Un nuevo objeto Grafo que representa el Árbol de Expansión Mínima.
+        """
         # Incializamos el conjunto de aristas:
         aristas_MST = set()
         num_aristas_en_MST = 0
@@ -933,6 +1098,21 @@ class Grafo:
 
     
     def KruskalI(self):
+        """
+        Calcula un Árbol de Expansión Mínima (MST) usando el algoritmo Kruskal inverso (Reverse-Delete).
+
+        Comienza con todas las aristas y elimina progresivamente las más pesadas
+        si no desconectan el grafo. La conectividad se verifica con BFS.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        minimum_spanning_tree : Grafo
+            Un nuevo objeto Grafo que representa el Árbol de Expansión Mínima resultante.
+        """
         # variable para ver si se desconecta o no
         num_nodos = len(self.conjunto_nodos.values())
         # Incializamos el conjunto de aristas:
@@ -982,6 +1162,25 @@ class Grafo:
         return minimum_spanning_tree
         
     def Prim(self):
+        """
+        Calcula un Árbol de Expansión Mínima (MST) usando el algoritmo de Prim.
+
+        Construye el MST creciendo desde un nodo inicial, añadiendo iterativamente
+        la arista de menor peso que conecta un nodo en el árbol con uno fuera de él.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        minimum_spanning_tree : Grafo
+            Un nuevo objeto Grafo que representa el Árbol de Expansión Mínima.
+
+        Notes
+        -----
+        El algoritmo inicia desde el nodo cuya etiqueta es '1'. Se asume que el grafo es conexo.
+        """
         # Asigmanos un conjunto S y una cola de prioridad
         nodos_MST = set()
         # Creamos el conjunto de aristas de nuestro arbol
